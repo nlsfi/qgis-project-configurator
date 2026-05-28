@@ -20,3 +20,15 @@ dmypy.json
 
 # Ruff stuff:
 .ruff_cache/
+
+# QGIS projects & attachements
+*.qgs~
+*.qgs
+*.qgz
+*.zip
+
+# QGIS settings
+.qgis-settings/
+
+# builds
+dist/

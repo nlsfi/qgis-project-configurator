@@ -1,0 +1,2 @@
+key_component_1: value_component_1
+component_2: !include ./component_2.yaml

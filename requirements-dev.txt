@@ -68,7 +68,11 @@ pytest-xdist==3.8.0
     # via qgis-project-configurator (pyproject.toml:dev)
 python-dotenv==1.2.2
     # via qgis-plugin-dev-tools
+pyyaml==6.0.3
+    # via qgis-project-configurator (pyproject.toml:dev)
 qgis-plugin-dev-tools==0.12.0
+    # via qgis-project-configurator (pyproject.toml:dev)
+qgis-plugin-tools==1.0.0
     # via qgis-project-configurator (pyproject.toml:dev)
 requests==2.34.2
     # via qgis-plugin-dev-tools
@@ -76,6 +80,8 @@ ruff==0.15.14
     # via qgis-project-configurator (pyproject.toml:dev)
 tomli==2.4.1
     # via qgis-plugin-dev-tools
+types-pyyaml==6.0.12.20260518
+    # via qgis-project-configurator (pyproject.toml:dev)
 types-requests==2.33.0.20260518
     # via qgis-project-configurator (pyproject.toml:dev)
 typing-extensions==4.15.0

@@ -2,11 +2,15 @@
 name = "qgis-project-configurator"
 version = "0.0.1"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = ["PyYAML"]
+
+[project.scripts]
+create-project = "qgis_project_configurator.cli.create_project:main"
 
 [dependency-groups]
 dev = [
   "qgis-plugin-dev-tools>=0.11.0",
+  "qgis-plugin-tools>=1.0.0",
   # testing
   "pytest",
   "pytest-mock",
@@ -23,6 +27,7 @@ dev = [
   # stubs for type checks
   # "PyQt5-stubs",
   "types-requests",
+  "types-PyYAML",
 ]
 
 [tool.flake8]
@@ -52,6 +57,12 @@ lint.ignore = [
   "COM812", # missing-trailing-comma (formatter will enforce this)
   "ISC001", # single-line-implicit-string-concatenation,
   "EXE002", # The file is executable but no shebang is present
+  "EM101",  # non-variable-string in exception
+  "TRY003", # long strings in excetptions
+  "EM102",  # f-string in exception
+  "G004",   # f-string in log
+  "D101",   # Docstrings
+  "D102",   # Docstrings
 ]
 
 # List of all rules https://docs.astral.sh/ruff/rules/
@@ -93,6 +104,8 @@ ban-relative-imports = "all"
   "ARG001",  # Unused function argument
   "AIR002",  # @dag should have an explicit `schedule` argument
 ]
+# Plugin uses these extesively
+"src/qgis_project_configurator_plugin/*" = ["N802", "ANN001", "ARG002"]
 
 [tool.mypy]
 python_version = "3.12"
@@ -101,3 +114,7 @@ show_column_numbers = true
 
 [tool.pytest.ini_options]
 addopts = "-n auto --import-mode=importlib"
+
+[tool.qgis_plugin_dev_tools]
+plugin_package_name = "qgis_project_configurator_plugin"
+runtime_requires = ["qgis_plugin_tools"]
