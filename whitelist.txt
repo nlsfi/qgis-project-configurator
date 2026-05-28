@@ -1,0 +1,4 @@
+qgis
+srid
+i18n
+iface

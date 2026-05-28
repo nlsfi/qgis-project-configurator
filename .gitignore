@@ -1,0 +1,22 @@
+__pycache__
+*.egg-info
+
+
+
+# virtual environments
+.venv
+
+# env file
+.env
+
+# IDE
+.vscode
+.idea
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ruff stuff:
+.ruff_cache/
