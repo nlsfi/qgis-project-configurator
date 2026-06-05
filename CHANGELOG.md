@@ -1,3 +1,5 @@
 # Changelog
 
-## 0.1.0
+## Unreleased
+
+- First project version including support for project generation and style exports

@@ -2,7 +2,26 @@
 name = "qgis-project-configurator"
 version = "0.0.1"
 requires-python = ">=3.12"
-dependencies = ["PyYAML"]
+dependencies = ["PyYAML", "qgis_plugin_tools"]
+
+[tool.setuptools.package-data]
+"qgis_project_configurator_plugin" = [
+  "metadata.txt",
+  "py.typed",
+  "**/*.ui",
+  "**/*.json",
+  "**/*.svg",
+  "**/*.ts",
+  "**/*.qm",
+]
+"qgis_project_configurator" = [
+  "py.typed",
+  "**/*.ui",
+  "**/*.json",
+  "**/*.svg",
+  "**/*.ts",
+  "**/*.qm",
+]
 
 [project.scripts]
 create-project = "qgis_project_configurator.cli.create_project:main"
@@ -10,7 +29,6 @@ create-project = "qgis_project_configurator.cli.create_project:main"
 [dependency-groups]
 dev = [
   "qgis-plugin-dev-tools>=0.11.0",
-  "qgis-plugin-tools>=1.0.0",
   # testing
   "pytest",
   "pytest-mock",
@@ -24,6 +42,8 @@ dev = [
   "ruff",
   # flake8 plugins
   "flake8-qgis",
+  "flake8-pyproject",
+  "flake8-spellcheck",
   # stubs for type checks
   # "PyQt5-stubs",
   "types-requests",
@@ -85,9 +105,7 @@ ban-relative-imports = "all"
 
 
 [tool.ruff.lint.per-file-ignores]
-"*/exceptions.py" = [
-  "D", # pydocstyle
-]
+".github/workflows/*" = ["INP001"]
 "test/*" = [
   "INP001",
   "D",       # pydocstyle
@@ -117,4 +135,4 @@ addopts = "-n auto --import-mode=importlib"
 
 [tool.qgis_plugin_dev_tools]
 plugin_package_name = "qgis_project_configurator_plugin"
-runtime_requires = ["qgis_plugin_tools"]
+runtime_requires = ["qgis_plugin_tools", "qgis_project_configurator"]

@@ -11,8 +11,15 @@ colorama==0.4.6 ; sys_platform == 'win32'
 execnet==2.1.2
     # via pytest-xdist
 flake8==7.3.0
-    # via flake8-qgis
+    # via
+    #   flake8-pyproject
+    #   flake8-qgis
+    #   flake8-spellcheck
+flake8-pyproject==1.2.4
+    # via qgis-project-configurator (pyproject.toml:dev)
 flake8-qgis==2.1.0
+    # via qgis-project-configurator (pyproject.toml:dev)
+flake8-spellcheck==0.28.0
     # via qgis-project-configurator (pyproject.toml:dev)
 idna==3.16
     # via requests

@@ -21,8 +21,8 @@ changelog=
 tags=
 
 homepage=
-tracker=
-repository=
+tracker=https://github.com/nlsfi/qgis-project-configurator/issues
+repository=https://github.com/nlsfi/qgis-project-configurator
 # icon=resources/icons/icon.png
 # experimental flag
 experimental=True

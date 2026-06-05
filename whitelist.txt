@@ -1,4 +1,5 @@
 alg
+changelog
 configurator
 crs
 dicts
@@ -24,6 +25,7 @@ subtree
 teardown
 tmp
 toc
+tz
 ui
 uic
 utils
