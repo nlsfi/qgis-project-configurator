@@ -1,0 +1,62 @@
+name: QGIS Plugin Tests
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - '.github/workflows/qgis_plugin.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - '.github/workflows/qgis_plugin.yml'
+
+jobs:
+  unit_tests:
+    runs-on: ubuntu-latest
+    container:
+      image: qgis/qgis:${{ matrix.qgis-image-tags }}
+    strategy:
+      matrix:
+        qgis-image-tags: [ "3.44.8-noble", "4.0-questing" ]
+      fail-fast: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install dependencies
+        run: |
+          apt update
+          apt install -y python3-venv
+          python3 -m venv --system-site-packages .venv
+          .venv/bin/pip3 install -q -r requirements-dev.txt --no-deps --only-binary=:all:
+          .venv/bin/pip3 install . --no-deps
+      - name: Run tests
+        run: |
+          .venv/bin/pytest
+        env:
+          QT_QPA_PLATFORM: offscreen
+
+  plugin_zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      # Use extra pip install . to do a non-editable install,
+      # so that .dist-info will go the package instead of .egg-info
+      - run: |
+          python -m venv --system-site-packages .venv
+          .venv/bin/activate
+          python -m pip install -U setuptools pip
+          pip install -r requirements-dev.txt
+          pip install .
+      - run: |
+          .venv/bin/activate
+          qgis-plugin-dev-tools build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plugin-zip
+          path: dist/*.zip

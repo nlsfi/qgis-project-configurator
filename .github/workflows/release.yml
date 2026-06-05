@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  release:
+    types: [ released ]
+
+jobs:
+  qgis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+
+        # use extra pip install . to do a non-editable install,
+        # so that .dist-info will go the package instead of .egg-info
+      - run: |
+          python -m venv --system-site-packages .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt --no-deps --only-binary=:all:
+          pip install . --no-deps
+      - run: |
+          source .venv/bin/activate
+          qgis-plugin-dev-tools build
+      - run: |
+          source .venv/bin/activate
+          qgis-plugin-dev-tools publish dist/*.zip
+        env:
+          QPDT_PUBLISH_USERNAME: ${{ secrets.QGIS_REPO_USERNAME }}
+          QPDT_PUBLISH_PASSWORD: ${{ secrets.QGIS_REPO_PASSWORD }}
+      - uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
+        with:
+          file: dist/*
+          file_glob: true
