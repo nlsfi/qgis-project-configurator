@@ -65,24 +65,27 @@ def _layer_node_to_config(
     node: QgsLayerTreeLayer,
     style_folder_config: StyleFolderConfig | None,
     feedback: QgsProcessingFeedback,
-) -> dict[str, Any]:
+) -> dict[str, str]:
     layer = node.layer()
     feedback.pushInfo(layer.name())
 
+    formatted_style_path = ""
     if style_folder_config:
         style_filename = f"{layer.name()}.qml"
-        style_saved = save_style(layer, style_folder_config.absolute / style_filename)
-        if not style_saved:
-            feedback.pushWarning()
-    else:
-        style_saved, style_filename = False, None
+        style_save_success = save_style(
+            layer, style_folder_config.absolute / style_filename
+        )
+        if style_save_success:
+            formatted_style_path = (
+                f"./{Path(style_folder_config.relative / style_filename).as_posix()}"
+            )
+        else:
+            feedback.pushWarning(f"Failed to save style for layer: {layer.name()}")
 
     uri = layer.dataProvider().uri()
     return {
         "vector_layer": layer.name(),
-        "style": str(style_folder_config.relative / style_filename)
-        if style_saved and style_folder_config and style_filename
-        else "",
+        "style": formatted_style_path,
         "table": uri.table(),
     }
 
