@@ -116,10 +116,13 @@ def _tree_node_to_config(
 
 
 def create_configuration_template(
-    output_file: Path, style_folder: Path | None, feedback: QgsProcessingFeedback
+    output_file: Path,
+    style_folder: Path | None,
+    feedback: QgsProcessingFeedback,
+    project: QgsProject | None = None,
 ) -> dict:
     """Create a config template."""
-    project = QgsProject.instance()
+    project = project or QgsProject.instance()
     layer_tree = project.layerTreeRoot()
 
     if style_folder:

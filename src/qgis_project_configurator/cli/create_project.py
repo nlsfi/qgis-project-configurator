@@ -104,7 +104,7 @@ def _str_or_path(value: str) -> str | Path:
 def _create_project(args: CreateProjectArgs) -> None:
     project = QgsProject.instance()
     if not project:
-        raise RuntimeError("Could not access a QGIS project")
+        raise RuntimeError("Could not get a QGIS project instance")
     project_path = args.project
     config_path = args.config
     data_source = args.data_source
