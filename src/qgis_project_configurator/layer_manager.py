@@ -30,6 +30,7 @@ from qgis.core import (
 )
 
 from qgis_project_configurator.map_theme_manager import MapThemeManager
+from qgis_project_configurator.qgis_utils import save_style
 from qgis_project_configurator.runtimeprofiler import profile_function, profiler
 from qgis_project_configurator.types import (
     CompiledConfig,
@@ -229,11 +230,11 @@ class LayerManager:
         return name_to_style
 
     def _export_layer_style(self, layer: QgsVectorLayer, style_path: Path) -> None:
-        ok, error_message = layer.saveNamedStyle(str(style_path))
-        if ok:
+        success = save_style(layer, style_path)
+        if success:
             LOGGER.info(f"Saved style for {layer.name()} to path {style_path}")
         else:
-            LOGGER.error(f"Failed to save style for {layer.name()}: {error_message}")
+            LOGGER.error(f"Failed to save style for {layer.name()} ({style_path})")
 
     def _layer_path_in_toc(self, layer: QgsLayerTreeLayer) -> str:
         root_node = QgsProject.instance().layerTreeRoot()
