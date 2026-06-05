@@ -28,6 +28,7 @@ version = { attr = "qgis_project_configurator.__version__" }
 
 [project.scripts]
 create-project = "qgis_project_configurator.cli.create_project:main"
+create-template = "qgis_project_configurator.cli.create_template:main"
 
 [dependency-groups]
 dev = [
