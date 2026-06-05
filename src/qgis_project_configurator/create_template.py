@@ -76,9 +76,15 @@ def _layer_node_to_config(
             layer, style_folder_config.absolute / style_filename
         )
         if style_save_success:
-            formatted_style_path = (
-                f"./{Path(style_folder_config.relative / style_filename).as_posix()}"
-            )
+            posix_path = Path(style_folder_config.relative / style_filename).as_posix()
+            # Prefix path with ./ if path beginning is not already explicit
+            if not posix_path.startswith(("..", "/")):
+                formatted_style_path = f"./{posix_path}"
+            # Path already has a prefix, keep as is: This keeps the path clean
+            # if styles are above the config file in the directory tree (..) or
+            # in the theoretical case of an absolute path (/)
+            else:
+                formatted_style_path = posix_path
         else:
             feedback.pushWarning(f"Failed to save style for layer: {layer.name()}")
 
