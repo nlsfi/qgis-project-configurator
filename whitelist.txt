@@ -13,6 +13,7 @@ ienabled
 iface
 param
 params
+posix
 postgis
 qgis
 qgs
