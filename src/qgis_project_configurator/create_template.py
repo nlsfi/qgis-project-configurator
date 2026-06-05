@@ -25,24 +25,17 @@ import yaml
 from qgis.core import (
     QgsLayerTreeLayer,
     QgsLayerTreeNode,
-    QgsMapLayer,
     QgsProcessingFeedback,
     QgsProject,
 )
+
+from qgis_project_configurator.qgis_utils import save_style
 
 
 @dataclass
 class StyleFolderConfig:
     absolute: Path
     relative: Path
-
-
-def _save_style(layer: QgsMapLayer, style_path: Path) -> bool:
-    _msg, style_saved = layer.saveNamedStyle(
-        str(style_path),
-        QgsMapLayer.StyleCategory.Symbology | QgsMapLayer.StyleCategory.Labeling,
-    )
-    return style_saved
 
 
 def _embedded_node_to_config(node: QgsLayerTreeNode) -> dict[str, Any]:
@@ -78,7 +71,7 @@ def _layer_node_to_config(
 
     if style_folder_config:
         style_filename = f"{layer.name()}.qml"
-        style_saved = _save_style(layer, style_folder_config.absolute / style_filename)
+        style_saved = save_style(layer, style_folder_config.absolute / style_filename)
         if not style_saved:
             feedback.pushWarning()
     else:
