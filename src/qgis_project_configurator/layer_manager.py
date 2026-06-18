@@ -126,9 +126,9 @@ class LayerManager:
         if feedback.isCanceled():
             return
 
-        if not parent_group:
+        if parent_group is None:  # in QGIS4 bool(QgsLayerTree()) always False
             parent_group = self.project.layerTreeRoot()
-            if not parent_group:
+            if parent_group is None:  # in QGIS4 bool(QgsLayerTree()) always False
                 feedback.reportError("cannot initialize layer tree")
                 return
 

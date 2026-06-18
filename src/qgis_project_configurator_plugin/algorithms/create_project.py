@@ -85,10 +85,10 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
                 iface.mainWindow(),
                 "Project not empty",
                 "Close the existing project or Cancel",
-                QMessageBox.Close | QMessageBox.Cancel,
-                QMessageBox.Close,
+                QMessageBox.StandardButton.Close | QMessageBox.StandardButton.Cancel,
+                QMessageBox.StandardButton.Close,
             )
-            if msg_box == QMessageBox.Cancel:
+            if msg_box == QMessageBox.StandardButton.Cancel:
                 return False
 
             success = iface.newProject(promptToSaveFlag=True)
