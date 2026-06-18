@@ -45,7 +45,7 @@ dev = [
   "flake8-pyproject",
   "flake8-spellcheck",
   # stubs for type checks
-  # "PyQt5-stubs",
+  "PyQt6-stubs",
   "types-requests",
   "types-PyYAML",
 ]
