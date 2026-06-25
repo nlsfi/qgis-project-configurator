@@ -36,7 +36,7 @@ changelog_file.write_text(
 
 # init
 
-init_file = Path("src/qgis-project-configurator/__init__.py")
+init_file = Path("src/qgis_project_configurator/__init__.py")
 init_line_to_replace = f'__version__ = "{v}"'
 
 init_file.write_text(
