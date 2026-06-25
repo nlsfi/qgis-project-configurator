@@ -18,7 +18,7 @@ jobs:
       - run: |
           python -m venv --system-site-packages .venv
           source .venv/bin/activate
-          pip install -r requirements.txt --no-deps --only-binary=:all:
+          pip install -r requirements-dev.txt --no-deps --only-binary=:all:
           pip install . --no-deps
       - run: |
           source .venv/bin/activate
