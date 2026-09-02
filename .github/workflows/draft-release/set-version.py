@@ -51,7 +51,7 @@ if not list(filter(bool, unreleased_changes)):
     raise ValueError(msg)
 
 link_line = (
-    f"[{v}]: https://github.com/nlsfi/qgis-project-configurator/releases/tag/v{v}\n"
+    f"[{v}]: <https://github.com/nlsfi/qgis-project-configurator/releases/tag/v{v}>\n"
 )
 
 changelog_file.write_text(
