@@ -47,7 +47,8 @@ LOGGER = logging.getLogger(__name__)
 def get_config(path: Path):  # noqa: ANN201
     """Load a configuration file using custom YAML loader."""
     with path.open() as f:
-        return yaml.load(f, Loader)  # noqa: S506 (using a custom loader)
+        # The below call is not unsafe: our custom loader inherits yaml.SafeLoader
+        return yaml.load(f, Loader)  # noqa: S506 # nosec B506
 
 
 def _merge_dicts(defaults: dict, override: dict) -> dict:

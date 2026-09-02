@@ -37,7 +37,7 @@ def _include_constructor(loader: Loader, node: yaml.nodes.ScalarNode) -> Any:  #
     include_path = (loader.root_directory / include_path_relative).resolve()
     # recursively load the included file to handle include within include
     with include_path.open("r", encoding="utf-8") as f:
-        return yaml.load(f, Loader)  # noqa: S506
+        return yaml.load(f, Loader)  # noqa: S506 # nosec B506
 
 
 Loader.add_constructor("!include", _include_constructor)
