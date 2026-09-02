@@ -18,12 +18,12 @@
 
 import logging
 
-# TODO: hacky qgis 4 import workaround, fix this properly
+# qgis 3 / 4 import workaround
 try:
     # original qgis 3 import
     from processing.gui.AlgorithmDialog import AlgorithmDialog
 except ImportError:
-    # aliased import for qgis 4
+    # aliased import for qgis 4 (functionally the same class)
     from processing.gui.algorithm_widget import AlgorithmWidget as AlgorithmDialog
 
 from qgis_project_configurator_plugin.ui.create_project_panel_widget import (
