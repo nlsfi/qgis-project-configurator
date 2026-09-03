@@ -38,7 +38,7 @@ jobs:
         env:
           QT_QPA_PLATFORM: offscreen
 
-  plugin_zip:
+  plugin_zip_and_security_scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -47,15 +47,25 @@ jobs:
           python-version: "3.12"
       # Use extra pip install . to do a non-editable install,
       # so that .dist-info will go the package instead of .egg-info
-      - run: |
+      - name: Install build & security scan dependencies
+        run: |
           python -m venv --system-site-packages .venv
           .venv/bin/activate
-          python -m pip install -U setuptools pip
+          python -m pip install -U setuptools pip bandit
           pip install -r requirements-dev.txt
           pip install .
-      - run: |
+      - name: Build plugin
+        run: |
           .venv/bin/activate
           qgis-plugin-dev-tools build
+      - name: Scan build
+        run: |
+          .venv/bin/activate
+          mkdir -p build_scan
+          unzip -q dist/*.zip -d build_scan/
+          # Scan for high severity only (-lll), matching qgis policy
+          # https://plugins.qgis.org/docs/security-scanning/tools
+          bandit -r build_scan/ -lll
       - uses: actions/upload-artifact@v4
         with:
           name: plugin-zip
