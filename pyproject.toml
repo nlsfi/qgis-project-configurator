@@ -136,3 +136,6 @@ addopts = "-n auto --import-mode=importlib"
 [tool.qgis_plugin_dev_tools]
 plugin_package_name = "qgis_project_configurator_plugin"
 runtime_requires = ["qgis_plugin_tools", "qgis_project_configurator"]
+
+[tool.bandit]
+exclude_dirs = ["test"]
