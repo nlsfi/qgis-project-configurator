@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Fix findings in qgis plugin repository checks
+- Enhance pre-commit and ci/cd with bandit to closer match qgis plugin repo infra
+
 ## [0.1.0] - 2026-06-25
 
 - First project version including support for project generation and style exports
