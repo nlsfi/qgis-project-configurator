@@ -1,5 +1,7 @@
 # Changelog
 
+## Unreleased
+
 ## [0.1.1] - 2026-09-08
 
 - Fix findings in qgis plugin repository checks
