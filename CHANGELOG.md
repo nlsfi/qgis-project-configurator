@@ -1,5 +1,7 @@
 # Changelog
 
+## Unreleased
+
 ## [0.1.2] - 2026-09-09
 
 - Fix changelog formatting
