@@ -1,6 +1,6 @@
 [project]
 name = "qgis-project-configurator"
-version = "0.0.1"
+dynamic = ["version"]
 requires-python = ">=3.12"
 dependencies = ["PyYAML", "qgis_plugin_tools"]
 
@@ -22,6 +22,9 @@ dependencies = ["PyYAML", "qgis_plugin_tools"]
   "**/*.ts",
   "**/*.qm",
 ]
+
+[tool.setuptools.dynamic]
+version = { attr = "qgis_project_configurator.__version__" }
 
 [project.scripts]
 create-project = "qgis_project_configurator.cli.create_project:main"
