@@ -19,6 +19,7 @@ postgis
 qgis
 qgs
 recurse
+representer
 runtimeprofiler
 srid
 subpath
