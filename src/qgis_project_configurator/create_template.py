@@ -159,5 +159,25 @@ def create_configuration_template(
 
 
 def _write_to_yaml(config: dict[str, Any], output_file: Path) -> None:
+
+    # A custom representer to enable more compact flow style for layers
+    def dynamic_dict_representer(
+        dumper: yaml.SafeDumper, data: dict[str, Any]
+    ) -> yaml.nodes.MappingNode:
+        is_layer = "vector_layer" in data
+        return dumper.represent_mapping(
+            "tag:yaml.org,2002:map",
+            data,
+            flow_style=is_layer,
+        )
+
+    yaml.SafeDumper.add_representer(dict, dynamic_dict_representer)
+
     with output_file.open("w") as yaml_file:
-        yaml.dump(config, yaml_file, sort_keys=False, default_flow_style=False)
+        yaml.dump(
+            config,
+            yaml_file,
+            Dumper=yaml.SafeDumper,
+            sort_keys=False,
+            default_flow_style=False,
+        )
