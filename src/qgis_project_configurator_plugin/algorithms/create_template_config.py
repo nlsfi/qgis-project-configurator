@@ -22,16 +22,21 @@ from qgis.core import (
     Qgis,
     QgsProcessingAlgorithm,
     QgsProcessingOutputFile,
+    QgsProcessingParameterBoolean,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterFolderDestination,
 )
 
-from qgis_project_configurator.create_template import create_configuration_template
+from qgis_project_configurator.create_template import (
+    ConfigStyle,
+    create_configuration_template,
+)
 
 
 class CreateTemplateMapConfig(QgsProcessingAlgorithm):
     OUTPUT = "OUTPUT"
     STYLE_FOLDER = "STYLE_FOLDER"
+    USE_COMPACT_CONFIG = "USE_COMPACT_CONFIG"
 
     def __init__(self) -> None:
         super().__init__()
@@ -54,6 +59,11 @@ class CreateTemplateMapConfig(QgsProcessingAlgorithm):
                 "Export styles to a folder",
                 optional=True,
                 defaultValue="",
+            ),
+            QgsProcessingParameterBoolean(
+                self.USE_COMPACT_CONFIG,
+                "Use compact syntax style for layers",
+                defaultValue=False,
             ),
         ]
         for parameter in parameters:
@@ -84,7 +94,17 @@ class CreateTemplateMapConfig(QgsProcessingAlgorithm):
         )
         output_style_folder = Path(output_style_folder) if output_style_folder else None
 
-        create_configuration_template(self.output_path, output_style_folder, feedback)
+        use_compact = self.parameterAsBool(parameters, self.USE_COMPACT_CONFIG, context)
+        config_style = (
+            ConfigStyle.COMPACT_LAYERS if use_compact else ConfigStyle.DEFAULT
+        )
+
+        create_configuration_template(
+            self.output_path,
+            output_style_folder,
+            feedback,
+            config_style,
+        )
 
         return True
 
@@ -103,6 +123,7 @@ class CreateTemplateMapConfig(QgsProcessingAlgorithm):
             "<li><b>Configuration file path</b>: File where to save configuration template</li>"  # noqa: E501
             "<li><b>Export styles to a folder</b> [optional]:  Define a folder if you want to save styles. "  # noqa: E501
             "If not given no styles for layers are defined in the configuration</li>"
+            "<li><b>Use compact syntax style for layers</b>: Formats layers on a single line in the resulting YAML.</li>"  # noqa: E501
             "</ul>"
         )
 
