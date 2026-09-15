@@ -86,6 +86,7 @@ class ConfigCompiler:
                 self.raw_config.get("project_properties", {})
             ),
             layouts=self._compile_layouts(self.raw_config.get("layouts", [])),
+            metadata=self.raw_config.get("metadata", {}),  # TODO: Metadata structure
         )
 
     def _compile_layer_tree(
