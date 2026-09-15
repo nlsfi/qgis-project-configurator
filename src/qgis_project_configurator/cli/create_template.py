@@ -22,13 +22,17 @@ from typing import Protocol
 from qgis.core import QgsProject
 
 from qgis_project_configurator.cli.cli_utils import LoggingProcessingFeedback, run_qgis
-from qgis_project_configurator.create_template import create_configuration_template
+from qgis_project_configurator.create_template import (
+    ConfigStyle,
+    create_configuration_template,
+)
 
 
 class CreateTemplateArgs(Protocol):
     project: Path
     config: Path
     style_directory: Path | None
+    compact: bool
 
 
 def setup_parser(subparsers: argparse._SubParsersAction) -> None:
@@ -53,19 +57,29 @@ def setup_parser(subparsers: argparse._SubParsersAction) -> None:
         type=Path,
         help="Optional directory to write styles to.",
     )
+    parser.add_argument(
+        "--compact",
+        action="store_true",
+        help="Use compact syntax for layers",
+    )
     parser.set_defaults(func=_create_template)
 
 
 @run_qgis
 def _create_template(args: CreateTemplateArgs) -> None:
     project_instance = QgsProject.instance()
-    if not project_instance:
+    if project_instance is None:
         raise RuntimeError("Could not get a QGIS project instance")
-    config = args.config
-    style_directory = args.style_directory
     success = project_instance.read(str(args.project))
     if not success:
         raise RuntimeError("Could not read QGIS project")
+    config = args.config
+    style_directory = args.style_directory
+    config_style = ConfigStyle.COMPACT_LAYERS if args.compact else ConfigStyle.DEFAULT
     create_configuration_template(
-        config, style_directory, LoggingProcessingFeedback(), project_instance
+        output_file=config,
+        style_folder=style_directory,
+        feedback=LoggingProcessingFeedback(),
+        config_style=config_style,
+        project=project_instance,
     )
