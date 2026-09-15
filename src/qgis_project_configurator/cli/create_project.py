@@ -46,8 +46,9 @@ class CreateProjectArgs(Protocol):
     store_metadata: bool
 
 
-def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="CLI tool for QGIS project creation.")
+def setup_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Registers the create-project subcommand."""
+    parser = subparsers.add_parser("create-project", help="Create a QGIS project.")
     parser.add_argument(
         "--project",
         type=Path,
@@ -87,10 +88,7 @@ def _parse_args() -> argparse.Namespace:
         action="store_true",
         help="Exit after compiling the configuration using the provided arguments.",
     )
-    if len(sys.argv) == 1:
-        parser.print_help()
-        sys.exit()
-    return parser.parse_args()
+    parser.set_defaults(func=_create_project)
 
 
 def _str_or_path(value: str) -> str | Path:
@@ -123,8 +121,3 @@ def _create_project(args: CreateProjectArgs) -> None:
     )
     if not dry_run:
         write_project(project, project_path)
-
-
-def main() -> None:  # noqa: D103
-    args = _parse_args()
-    _create_project(args)
