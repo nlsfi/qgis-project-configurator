@@ -20,7 +20,7 @@ import logging
 
 from qgis.core import QgsMapThemeCollection, QgsProject
 
-from qgis_project_configurator.types import MapThemes
+from qgis_project_configurator.models import MapThemes
 
 LOGGER = logging.getLogger(__name__)
 

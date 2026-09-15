@@ -26,8 +26,8 @@ from qgis.core import (
 )
 from qgis.PyQt.QtXml import QDomDocument
 
+from qgis_project_configurator.models import PrintLayouts
 from qgis_project_configurator.runtimeprofiler import profile_function
-from qgis_project_configurator.types import PrintLayouts
 
 LOGGER = logging.getLogger(__name__)
 

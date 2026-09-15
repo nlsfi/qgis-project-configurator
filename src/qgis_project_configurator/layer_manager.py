@@ -30,9 +30,7 @@ from qgis.core import (
 )
 
 from qgis_project_configurator.map_theme_manager import MapThemeManager
-from qgis_project_configurator.qgis_utils import save_style
-from qgis_project_configurator.runtimeprofiler import profile_function, profiler
-from qgis_project_configurator.types import (
+from qgis_project_configurator.models import (
     CompiledConfig,
     EmbeddedLayerGroup,
     GpkgSource,
@@ -44,6 +42,8 @@ from qgis_project_configurator.types import (
     Scale,
     VectorLayer,
 )
+from qgis_project_configurator.qgis_utils import save_style
+from qgis_project_configurator.runtimeprofiler import profile_function, profiler
 
 NON_BREAK_SPACE = "\xa0"
 

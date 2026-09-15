@@ -19,7 +19,7 @@
 from pathlib import Path
 
 from qgis_project_configurator.config import ConfigCompiler
-from qgis_project_configurator.types import PrintLayout
+from qgis_project_configurator.models import PrintLayout
 
 
 def test_layout_config(base_config: dict, tmp_path: Path):
