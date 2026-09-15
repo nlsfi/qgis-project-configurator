@@ -100,11 +100,15 @@ class PrintLayout:
 PrintLayouts = list[PrintLayout]
 
 
+Metadata = dict[str, Any]
+
+
 @dataclass(frozen=True)
 class CompiledConfig:
     layer_tree: LayerTree
     project_properties: ProjectProperties
     layouts: PrintLayouts
+    metadata: Metadata
 
     def count_map_layers(self) -> int:
         def count(node: LayerTreeNode) -> int:
