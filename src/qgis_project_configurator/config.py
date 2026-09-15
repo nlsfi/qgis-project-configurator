@@ -23,7 +23,7 @@ from typing import Literal
 
 import yaml
 
-from qgis_project_configurator.types import (
+from qgis_project_configurator.models import (
     CompiledConfig,
     DataSource,
     EmbeddedLayerGroup,

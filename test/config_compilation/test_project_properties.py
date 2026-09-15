@@ -18,7 +18,7 @@
 from pathlib import Path
 
 from qgis_project_configurator.config import ConfigCompiler
-from qgis_project_configurator.types import ProjectEntry
+from qgis_project_configurator.models import ProjectEntry
 
 
 def test_flat_project_properties_mapped_to_entries(base_config: dict, tmp_path: Path):

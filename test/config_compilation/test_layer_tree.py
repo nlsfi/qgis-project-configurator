@@ -18,7 +18,7 @@
 from pathlib import Path
 
 from qgis_project_configurator.config import ConfigCompiler
-from qgis_project_configurator.types import (
+from qgis_project_configurator.models import (
     GpkgSource,
     PostgisSource,
     Scale,

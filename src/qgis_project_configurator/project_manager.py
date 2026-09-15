@@ -22,7 +22,7 @@ from pathlib import Path
 
 from qgis.core import QgsCoordinateReferenceSystem, QgsProject
 
-from qgis_project_configurator.types import ProjectEntry, ProjectProperties
+from qgis_project_configurator.models import ProjectEntry, ProjectProperties
 
 LOGGER = logging.getLogger(__name__)
 
