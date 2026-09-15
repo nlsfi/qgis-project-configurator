@@ -59,11 +59,7 @@ def create_project(  # noqa: PLR0913 TODO: refactor to use CreateProjectParams
         product_version=product_version,
     ).compile()
     if dry_run:
-        LOGGER.info(
-            f"""Compiled config:\n {
-                json.dumps(asdict(compiled_config), indent=2, default=str)
-            }"""
-        )
+        print(json.dumps(asdict(compiled_config), indent=2, default=str))  # noqa: T201
         return
     layer_manager = LayerManager(
         project=project,
