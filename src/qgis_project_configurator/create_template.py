@@ -18,6 +18,7 @@
 
 import os
 from dataclasses import dataclass
+from enum import Enum, auto
 from pathlib import Path
 from typing import Any
 
@@ -36,6 +37,11 @@ from qgis_project_configurator.qgis_utils import save_style
 class StyleFolderConfig:
     absolute: Path
     relative: Path
+
+
+class ConfigStyle(Enum):
+    DEFAULT = auto()
+    COMPACT_LAYERS = auto()
 
 
 def _embedded_node_to_config(node: QgsLayerTreeNode) -> dict[str, Any]:
@@ -119,6 +125,7 @@ def create_configuration_template(
     output_file: Path,
     style_folder: Path | None,
     feedback: QgsProcessingFeedback,
+    config_style: ConfigStyle = ConfigStyle.DEFAULT,
     project: QgsProject | None = None,
 ) -> dict:
     """Create a config template."""
@@ -153,11 +160,39 @@ def create_configuration_template(
         "layouts": [],
     }
 
-    _write_to_yaml(config, output_file)
+    _write_to_yaml(config, output_file, config_style)
 
     return config
 
 
-def _write_to_yaml(config: dict[str, Any], output_file: Path) -> None:
+def _write_to_yaml(
+    config: dict[str, Any],
+    output_file: Path,
+    config_style: ConfigStyle,
+) -> None:
+
+    class CustomDumper(yaml.SafeDumper):
+        pass
+
+    # A custom representer to enable more compact flow style for layers
+    def dynamic_dict_representer(
+        dumper: yaml.SafeDumper, data: dict[str, Any]
+    ) -> yaml.nodes.MappingNode:
+        is_layer = "vector_layer" in data
+        is_compact = is_layer and config_style == ConfigStyle.COMPACT_LAYERS
+        return dumper.represent_mapping(
+            "tag:yaml.org,2002:map",
+            data,
+            flow_style=is_compact,
+        )
+
+    CustomDumper.add_representer(dict, dynamic_dict_representer)
+
     with output_file.open("w") as yaml_file:
-        yaml.dump(config, yaml_file, sort_keys=False, default_flow_style=False)
+        yaml.dump(
+            config,
+            yaml_file,
+            Dumper=CustomDumper,
+            sort_keys=False,
+            default_flow_style=False,
+        )
