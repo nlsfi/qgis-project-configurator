@@ -18,7 +18,6 @@
 
 import argparse
 import logging
-import sys
 from pathlib import Path
 from typing import Protocol
 
@@ -31,7 +30,6 @@ from qgis_project_configurator.create_project import create_project, write_proje
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)-8s %(name)s %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)],
 )
 
 LOGGER = logging.getLogger(__name__)

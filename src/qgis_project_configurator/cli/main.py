@@ -19,16 +19,35 @@
 import argparse
 import sys
 
-from qgis_project_configurator.cli import create_project, create_template
+from qgis_project_configurator.cli import (
+    create_project,
+    create_template,
+    get_metadata,
+    version,
+)
 
 
 def main() -> None:
     """Main cli entrypoint."""
     parser = argparse.ArgumentParser(description="QGIS Project Configurator CLI")
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=version.get_version(),
+        help="Show application version and exit.",
+    )
+    parser.add_argument(
+        "--qgis-version",
+        action="version",
+        version=version.get_qgis_version(),
+        help="Show qgis version and exit.",
+    )
+
     subparsers = parser.add_subparsers(title="commands", dest="command", required=True)
 
     create_project.setup_parser(subparsers)
     create_template.setup_parser(subparsers)
+    get_metadata.setup_parser(subparsers)
 
     if len(sys.argv) == 1:
         parser.print_help()
