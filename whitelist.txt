@@ -2,6 +2,7 @@ alg
 changelog
 configurator
 crs
+dest
 dicts
 dom
 epsg
@@ -14,6 +15,7 @@ ienabled
 iface
 param
 params
+parsers
 posix
 postgis
 qgis
@@ -21,6 +23,7 @@ qgs
 recurse
 runtimeprofiler
 srid
+subparsers
 subpath
 subtree
 teardown

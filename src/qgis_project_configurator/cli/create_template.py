@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 import argparse
-import sys
 from pathlib import Path
 from typing import Protocol
 
@@ -32,9 +31,10 @@ class CreateTemplateArgs(Protocol):
     style_directory: Path | None
 
 
-def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="CLI tool for creating a template configuration"
+def setup_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Registers the create-template subcommand."""
+    parser = subparsers.add_parser(
+        "create-template", help="Create a template configuration file."
     )
     parser.add_argument(
         "--project",
@@ -42,23 +42,18 @@ def _parse_args() -> argparse.Namespace:
         help="QGIS project file to read from.",
         required=True,
     )
-
     parser.add_argument(
         "--config",
         type=Path,
         help="Config file to write to.",
         required=True,
     )
-
     parser.add_argument(
         "--style-directory",
         type=Path,
         help="Optional directory to write styles to.",
     )
-    if len(sys.argv) == 1:
-        parser.print_help()
-        sys.exit()
-    return parser.parse_args()
+    parser.set_defaults(func=_create_template)
 
 
 @run_qgis
@@ -74,8 +69,3 @@ def _create_template(args: CreateTemplateArgs) -> None:
     create_configuration_template(
         config, style_directory, LoggingProcessingFeedback(), project_instance
     )
-
-
-def main() -> None:  # noqa: D103
-    args = _parse_args()
-    _create_template(args)
