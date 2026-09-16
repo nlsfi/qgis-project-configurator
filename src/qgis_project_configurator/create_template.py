@@ -195,4 +195,5 @@ def _write_to_yaml(
             Dumper=CustomDumper,
             sort_keys=False,
             default_flow_style=False,
+            width=float("inf"),
         )
