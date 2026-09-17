@@ -44,10 +44,16 @@ Install the package in editable mode:
 pip install -e .
 ```
 
-Now you can use the cli for creating projects:
+Now you can use the cli:
 
 ```console
-create-project --help
+qgis-project-configurator --help
+```
+
+Or use the shorthand:
+
+```console
+qpc --help
 ```
 
 ### Developing the QGIS plugin
