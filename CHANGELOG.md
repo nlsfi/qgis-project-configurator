@@ -3,6 +3,10 @@
 ## Unreleased
 
 - Add cli support for creating config templates
+- Add initial metadata support to config format
+- Add cli command for querying metadata from config file
+- Add cli support for displaying library & qgis version
+- Unify cli commands under a single entrypoint
 
 ## [0.1.2] - 2026-09-09
 
