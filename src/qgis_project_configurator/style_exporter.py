@@ -20,9 +20,8 @@ import logging
 from pathlib import Path
 
 from qgis.core import (
-    QgsLayerTreeLayer,
+    QgsMapLayer,
     QgsProject,
-    QgsVectorLayer,
 )
 
 from qgis_project_configurator.models import (
@@ -64,24 +63,27 @@ class StyleExporter:
             recurse(node)
         return name_to_style
 
-    def _export_layer_style(self, layer: QgsVectorLayer, style_path: Path) -> None:
+    def _export_layer_style(self, layer: QgsMapLayer, style_path: Path) -> None:
         success = save_style(layer, style_path)
         if success:
             LOGGER.info(f"Saved style for {layer.name()} to path {style_path}")
         else:
             LOGGER.error(f"Failed to save style for {layer.name()} ({style_path})")
 
-    def _layer_path_in_toc(self, layer: QgsLayerTreeLayer) -> str:
-        root_node = QgsProject.instance().layerTreeRoot()
+    def _layer_path_in_toc(self, layer: QgsMapLayer) -> str:
+        root_node = self.project.layerTreeRoot()
+        if root_node is None:
+            raise RuntimeError("Cannot get layer tree root")
         layer_node = root_node.findLayer(layer)
+        if layer_node is None:
+            raise RuntimeError(f"Layer {layer.name()} not found in layer tree")
         path = [layer.name()]
-        while layer_node := layer_node.parent():
+        while (layer_node := layer_node.parent()) is not None:
             if group_name := layer_node.name():
                 path.append(group_name)
-
         return "/".join(reversed(path))
 
-    def export_layer_styles(self, layers: list[QgsLayerTreeLayer]) -> None:
+    def export_layer_styles(self, layers: list[QgsMapLayer]) -> None:
         style_map = self._map_layer_names_to_style_files()
         for layer in layers:
             layer_path = self._layer_path_in_toc(layer)

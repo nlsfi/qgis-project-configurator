@@ -19,7 +19,7 @@
 import logging
 from pathlib import Path
 
-from qgis.core import QgsLayerTreeLayer, QgsProject
+from qgis.core import QgsMapLayer, QgsProject
 
 from qgis_project_configurator.config_compiler import ConfigCompiler
 from qgis_project_configurator.qgis_utils import read_project_entry
@@ -29,7 +29,7 @@ from qgis_project_configurator.yaml_loader import load_config
 LOGGER = logging.getLogger(__name__)
 
 
-def export_layer_styles(layers: list[QgsLayerTreeLayer], project: QgsProject) -> None:
+def export_layer_styles(layers: list[QgsMapLayer], project: QgsProject) -> None:
     """Export layer styles."""
     LOGGER.info("exporting selected layer styles")
     config_path = read_project_entry(
