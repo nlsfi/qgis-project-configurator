@@ -27,27 +27,6 @@ from qgis_project_configurator.models import ProjectEntry, ProjectProperties
 LOGGER = logging.getLogger(__name__)
 
 
-def read_project_entry(
-    project: QgsProject, scope: str, key: str, default_value: None = None
-) -> None | Path | str:
-    """Read an entry from a QGIS project.
-
-    Automatically transforms paths to pathlib.Path.
-    """
-    value, type_conversion_success = project.readEntry(
-        scope,
-        key,
-        default_value,
-    )
-    if not type_conversion_success:
-        return default_value
-    # If the value is a file path, return as python path
-    if Path(value).exists():
-        return Path(value).resolve()
-    # In other cases return value as is
-    return value
-
-
 class ProjectManager:
     def __init__(
         self,

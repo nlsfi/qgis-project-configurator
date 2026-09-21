@@ -18,23 +18,23 @@
 
 from pathlib import Path
 
-from qgis_project_configurator.config import get_config
+from qgis_project_configurator.yaml_loader import load_config
 
 YAML_PATH = Path(__file__).parent.parent / "resources/yaml"
 
 
 def test_simple_config_loads():
-    config = get_config(YAML_PATH / "component_2.yaml")
+    config = load_config(YAML_PATH / "component_2.yaml")
     assert config["key_component_2"] == "value_component_2"
 
 
 def test_included_config_loads():
-    config = get_config(YAML_PATH / "include.yaml")
+    config = load_config(YAML_PATH / "include.yaml")
     assert config["component_1"]["key_component_1"] == "value_component_1"
 
 
 def test_include_within_included_config_loads():
-    config = get_config(YAML_PATH / "include.yaml")
+    config = load_config(YAML_PATH / "include.yaml")
     assert (
         config["component_1"]["component_2"]["key_component_2"] == "value_component_2"
     )

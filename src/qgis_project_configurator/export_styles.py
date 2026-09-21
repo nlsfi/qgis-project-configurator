@@ -21,10 +21,10 @@ from pathlib import Path
 
 from qgis.core import QgsLayerTreeLayer, QgsProject
 
-from qgis_project_configurator.config import ConfigCompiler, get_config
-from qgis_project_configurator.layer_manager import LayerManager
-from qgis_project_configurator.map_theme_manager import MapThemeManager
-from qgis_project_configurator.project_manager import read_project_entry
+from qgis_project_configurator.config_compiler import ConfigCompiler
+from qgis_project_configurator.qgis_utils import read_project_entry
+from qgis_project_configurator.style_exporter import StyleExporter
+from qgis_project_configurator.yaml_loader import load_config
 
 LOGGER = logging.getLogger(__name__)
 
@@ -52,16 +52,15 @@ def export_layer_styles(layers: list[QgsLayerTreeLayer], project: QgsProject) ->
         return
     if config_path and product_version and data_source:
         compiled_config = ConfigCompiler(
-            raw_config=get_config(config_path),
+            raw_config=load_config(config_path),
             config_dir=config_path.parent,
             data_source=data_source,
             project_dir=Path("placeholder"),  # TODO: not needed here
             product_version=product_version,
         ).compile()
-        LayerManager(
+        StyleExporter(
             project=project,
             config=compiled_config,
-            map_theme_manager=MapThemeManager(project),  # TODO: not needed here
         ).export_layer_styles(layers=layers)
     else:
         LOGGER.error("project lacks needed metadata")

@@ -22,7 +22,7 @@ from typing import IO, Any
 import yaml
 
 
-class Loader(yaml.SafeLoader):
+class _Loader(yaml.SafeLoader):
     def __init__(self, stream: IO[Any]) -> None:
         # use file path as root directory, fallback to cwd
         if hasattr(stream, "name"):
@@ -32,12 +32,19 @@ class Loader(yaml.SafeLoader):
         super().__init__(stream)
 
 
-def _include_constructor(loader: Loader, node: yaml.nodes.ScalarNode) -> Any:  # noqa: ANN401
+def _include_constructor(loader: _Loader, node: yaml.nodes.ScalarNode) -> Any:  # noqa: ANN401
     include_path_relative = loader.construct_scalar(node)
     include_path = (loader.root_directory / include_path_relative).resolve()
     # recursively load the included file to handle include within include
     with include_path.open("r", encoding="utf-8") as f:
-        return yaml.load(f, Loader)  # noqa: S506 # nosec B506
+        return yaml.load(f, _Loader)  # noqa: S506 # nosec B506
 
 
-Loader.add_constructor("!include", _include_constructor)
+_Loader.add_constructor("!include", _include_constructor)
+
+
+def load_config(path: Path):  # noqa: ANN201
+    """Load a configuration file using custom YAML loader."""
+    with path.open() as f:
+        # The below call is not unsafe: our custom loader inherits yaml.SafeLoader
+        return yaml.load(f, _Loader)  # noqa: S506 # nosec B506

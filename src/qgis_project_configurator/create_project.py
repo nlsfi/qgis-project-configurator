@@ -23,7 +23,7 @@ from pathlib import Path
 
 from qgis.core import QgsProcessingFeedback, QgsProject
 
-from qgis_project_configurator.config import ConfigCompiler
+from qgis_project_configurator.config_compiler import ConfigCompiler
 from qgis_project_configurator.layer_manager import LayerManager
 from qgis_project_configurator.layout_manager import LayoutManager
 from qgis_project_configurator.map_theme_manager import MapThemeManager
