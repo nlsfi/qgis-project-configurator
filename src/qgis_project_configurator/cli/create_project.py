@@ -24,8 +24,8 @@ from typing import Protocol
 from qgis.core import QgsProject
 
 from qgis_project_configurator.cli.cli_utils import LoggingProcessingFeedback, run_qgis
-from qgis_project_configurator.config import get_config
 from qgis_project_configurator.create_project import create_project, write_project
+from qgis_project_configurator.yaml_loader import load_config
 
 logging.basicConfig(
     level=logging.INFO,
@@ -108,7 +108,7 @@ def _create_project(args: CreateProjectArgs) -> None:
     dry_run = args.dry_run
     create_project(
         project=project,
-        config=get_config(config_path),
+        config=load_config(config_path),
         config_path=config_path,
         data_source=data_source,
         product_version=product_version,

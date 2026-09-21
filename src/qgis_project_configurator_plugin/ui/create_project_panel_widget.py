@@ -25,7 +25,7 @@ from qgis.gui import QgsFileWidget, QgsPanelWidget, QgsProcessingParametersGener
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QComboBox, QLabel, QWidget
 
-from qgis_project_configurator.config import get_config
+from qgis_project_configurator.yaml_loader import load_config
 
 ui_path = resources.files(__package__) / "create_project_panel_widget.ui"
 CreateProjectPanelWidgetBase, _ = uic.loadUiType(ui_path)
@@ -63,7 +63,7 @@ class CreateProjectPanelWidget(QgsPanelWidget, CreateProjectPanelWidgetBase):  #
 
     def on_config_file_change(self, config_file: str) -> None:
         if config_file and Path(config_file).exists():
-            self.config = get_config(Path(config_file))
+            self.config = load_config(Path(config_file))
         else:
             self.config = None
         self.populate_combo_boxes()

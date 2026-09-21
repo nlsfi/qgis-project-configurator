@@ -28,10 +28,10 @@ from qgis.core import (
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.utils import iface
 
-from qgis_project_configurator.config import get_config
 from qgis_project_configurator.create_project import (
     create_project as lib_create_project,
 )
+from qgis_project_configurator.yaml_loader import load_config
 from qgis_project_configurator_plugin.tools.parameters import CreateProjectParams
 from qgis_project_configurator_plugin.ui.create_project_dialog import (
     CreateProjectDialog,
@@ -116,7 +116,7 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
             return False
 
         params = self._get_params(parameters, context)
-        config = get_config(params.config_path)
+        config = load_config(params.config_path)
 
         iface.mapCanvas().freeze(True)  # noqa: FBT003
         try:

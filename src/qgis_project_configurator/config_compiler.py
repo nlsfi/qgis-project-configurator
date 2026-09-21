@@ -21,8 +21,6 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Literal
 
-import yaml
-
 from qgis_project_configurator.models import (
     CompiledConfig,
     DataSource,
@@ -39,16 +37,8 @@ from qgis_project_configurator.models import (
     Scale,
     VectorLayer,
 )
-from qgis_project_configurator.yaml_utils import Loader
 
 LOGGER = logging.getLogger(__name__)
-
-
-def get_config(path: Path):  # noqa: ANN201
-    """Load a configuration file using custom YAML loader."""
-    with path.open() as f:
-        # The below call is not unsafe: our custom loader inherits yaml.SafeLoader
-        return yaml.load(f, Loader)  # noqa: S506 # nosec B506
 
 
 def _merge_dicts(defaults: dict, override: dict) -> dict:

@@ -20,7 +20,7 @@ from json import dumps
 from pathlib import Path
 from typing import Protocol
 
-from qgis_project_configurator.config import get_config
+from qgis_project_configurator.yaml_loader import load_config
 
 
 class GetMetadataArgs(Protocol):
@@ -46,7 +46,7 @@ def setup_parser(subparsers: argparse._SubParsersAction) -> None:
 
 
 def _get_metadata(args: GetMetadataArgs) -> None:
-    config = get_config(args.config)
+    config = load_config(args.config)
     if isinstance(config, dict):
         metadata = config.get("metadata") or {}
         if args.key:
