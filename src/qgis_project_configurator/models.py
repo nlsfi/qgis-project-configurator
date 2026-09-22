@@ -20,7 +20,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from qgis.core import QgsVectorLayer
+from qgis.core import QgsMapLayer
 
 
 @dataclass(frozen=True)
@@ -51,7 +51,7 @@ class Scale:
 MapThemeNames = list[str]
 
 
-MapThemes = dict[str, list[QgsVectorLayer]]
+MapThemes = dict[str, list[QgsMapLayer]]
 
 
 @dataclass(frozen=True)
