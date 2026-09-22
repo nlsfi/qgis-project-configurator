@@ -23,6 +23,7 @@ from qgis.core import (
     QgsDataSourceUri,
     QgsLayerTree,
     QgsLayerTreeGroup,
+    QgsMapLayer,
     QgsProcessingFeedback,
     QgsProject,
     QgsVectorLayer,
@@ -95,7 +96,7 @@ class LayerManager:
         )
 
     @profile_function("load style")
-    def _load_layer_style(self, style_file: Path, layer: QgsVectorLayer) -> None:
+    def _load_layer_style(self, style_file: Path, layer: QgsMapLayer) -> None:
         if style_file.exists():
             LOGGER.info(f"loading style from: {style_file}")
             message, success = layer.loadNamedStyle(str(style_file))
@@ -105,7 +106,7 @@ class LayerManager:
             LOGGER.error(f"style file not found: {style_file}")
 
     @profile_function("set scale")
-    def _set_layer_scale(self, layer: QgsVectorLayer, scale: Scale) -> None:
+    def _set_layer_scale(self, layer: QgsMapLayer, scale: Scale) -> None:
         layer.setScaleBasedVisibility(True)
         layer.setMinimumScale(scale.min or 0)
         layer.setMaximumScale(scale.max or 0)
@@ -133,6 +134,9 @@ class LayerManager:
         if isinstance(node, LayerGroup):
             feedback.pushInfo(f"{level * 2 * NON_BREAK_SPACE}{node.name}")
             group = parent_group.addGroup(node.name)
+            if group is None:
+                feedback.reportError("Cannot create group")
+                return
             group.setExpanded(False)
             for child in node.children:
                 self._add_layer_tree_node(
@@ -149,7 +153,7 @@ class LayerManager:
                 str(node.source),
                 invisibleLayers=[],
             )
-            if embedded_group:
+            if embedded_group is not None:
                 parent_group.addChildNode(embedded_group)
                 self._added_map_layers += 1
                 feedback.setProgress(self._progress())
@@ -160,7 +164,8 @@ class LayerManager:
                 layer = self._load_gpkg_layer(node.name, node.data_source)
             elif isinstance(node.data_source, PostgisSource):
                 layer = self._load_postgis_layer(node.name, node.data_source)
-
+            else:
+                return  # TODO: Only gpkg / postgis vector layers supported
             if layer.isValid():
                 feedback.pushInfo(f"{level * 2 * NON_BREAK_SPACE}{node.name}")
             else:
@@ -168,7 +173,7 @@ class LayerManager:
                     f"{level * 2 * NON_BREAK_SPACE}{node.name} - Invalid layer"
                 )
 
-            if node.style_file:
+            if node.style_file is not None:
                 self._load_layer_style(
                     style_file=node.style_file,
                     layer=layer,
@@ -187,15 +192,22 @@ class LayerManager:
                 )
                 profiled_add_layer(layer)
 
-            self.project.layerTreeRoot().findLayer(layer.id()).setExpanded(False)
+            self._minimize_layer(layer)
 
             profiler.end()
             self._added_map_layers += 1
             feedback.setProgress(self._progress())
 
+    def _minimize_layer(self, layer: QgsMapLayer) -> None:
+        tree_root = self.project.layerTreeRoot()
+        if tree_root is not None:
+            tree_layer = tree_root.findLayer(layer.id())
+            if tree_layer is not None:
+                tree_layer.setExpanded(False)
+
     @profile_function("set themes")
     def _add_layer_to_map_themes(
-        self, layer: QgsVectorLayer, theme_names: MapThemeNames
+        self, layer: QgsMapLayer, theme_names: MapThemeNames
     ) -> None:
         for theme_name in theme_names:
             if not self.layers_by_map_themes.get(theme_name):
