@@ -27,9 +27,9 @@ from qgis_project_configurator.models import (
 
 
 def test_layer_default_style_resolved_no_product_version(
-    base_config: dict, tmp_path: Path
+    raw_config: dict, tmp_path: Path
 ):
-    base_config["layer_tree"] = [
+    raw_config["layer_tree"] = [
         {
             "vector_layer": "layer",
             "style": "./style.qml",
@@ -38,7 +38,7 @@ def test_layer_default_style_resolved_no_product_version(
         },
     ]
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
@@ -47,9 +47,9 @@ def test_layer_default_style_resolved_no_product_version(
 
 
 def test_layer_default_style_resolved_with_product_version(
-    base_config: dict, tmp_path: Path
+    raw_config: dict, tmp_path: Path
 ):
-    base_config["layer_tree"] = [
+    raw_config["layer_tree"] = [
         {
             "vector_layer": "layer",
             "style": "./style.qml",
@@ -58,7 +58,7 @@ def test_layer_default_style_resolved_with_product_version(
         },
     ]
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
@@ -67,8 +67,8 @@ def test_layer_default_style_resolved_with_product_version(
     assert compiled.layer_tree[0].style_file == tmp_path / "style.qml"
 
 
-def test_layer_style_overrides_resolved(base_config: dict, tmp_path: Path):
-    base_config["layer_tree"] = [
+def test_layer_style_overrides_resolved(raw_config: dict, tmp_path: Path):
+    raw_config["layer_tree"] = [
         {
             "vector_layer": "layer",
             "style": "./style.qml",
@@ -77,7 +77,7 @@ def test_layer_style_overrides_resolved(base_config: dict, tmp_path: Path):
         },
     ]
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
@@ -86,8 +86,8 @@ def test_layer_style_overrides_resolved(base_config: dict, tmp_path: Path):
     assert compiled.layer_tree[0].style_file == tmp_path / "green.qml"
 
 
-def test_hidden_layer_excluded(base_config: dict, tmp_path: Path):
-    base_config["layer_tree"] = [
+def test_hidden_layer_excluded(raw_config: dict, tmp_path: Path):
+    raw_config["layer_tree"] = [
         {
             "vector_layer": "layer",
             "style": "./style.qml",
@@ -102,7 +102,7 @@ def test_hidden_layer_excluded(base_config: dict, tmp_path: Path):
         },
     ]
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
@@ -112,8 +112,8 @@ def test_hidden_layer_excluded(base_config: dict, tmp_path: Path):
     assert compiled.layer_tree[0].name == "layer2"
 
 
-def test_layer_postgis_source_constructed_from_table(base_config: dict, tmp_path: Path):
-    base_config["data_sources"] = {
+def test_layer_postgis_source_constructed_from_table(raw_config: dict, tmp_path: Path):
+    raw_config["data_sources"] = {
         "db": {
             "type": "postgis",
             "service": "db",
@@ -121,14 +121,14 @@ def test_layer_postgis_source_constructed_from_table(base_config: dict, tmp_path
             "geom_column": "geom",
         },
     }
-    base_config["layer_tree"] = [
+    raw_config["layer_tree"] = [
         {
             "vector_layer": "layer",
             "table": "table",
         },
     ]
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
@@ -142,21 +142,21 @@ def test_layer_postgis_source_constructed_from_table(base_config: dict, tmp_path
     )
 
 
-def test_layer_gpkg_source_constructed_from_table(base_config: dict, tmp_path: Path):
-    base_config["data_sources"] = {
+def test_layer_gpkg_source_constructed_from_table(raw_config: dict, tmp_path: Path):
+    raw_config["data_sources"] = {
         "gpkg": {
             "type": "gpkg",
             "path": "./data.gpkg",
         },
     }
-    base_config["layer_tree"] = [
+    raw_config["layer_tree"] = [
         {
             "vector_layer": "layer",
             "table": "table",
         },
     ]
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="gpkg",
         project_dir=tmp_path,
@@ -168,8 +168,8 @@ def test_layer_gpkg_source_constructed_from_table(base_config: dict, tmp_path: P
     )
 
 
-def test_embedded_group_project_path_resolved(base_config: dict, tmp_path: Path):
-    base_config["layer_tree"] = [
+def test_embedded_group_project_path_resolved(raw_config: dict, tmp_path: Path):
+    raw_config["layer_tree"] = [
         {
             "embedded_group": "group",
             "source": "./project.qgs",
@@ -177,7 +177,7 @@ def test_embedded_group_project_path_resolved(base_config: dict, tmp_path: Path)
     ]
     project_dir = tmp_path / "project_dir"
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=project_dir,
@@ -185,8 +185,8 @@ def test_embedded_group_project_path_resolved(base_config: dict, tmp_path: Path)
     assert compiled.layer_tree[0].source == project_dir / "project.qgs"
 
 
-def test_geopackage_override_path_resolved(base_config: dict, tmp_path: Path):
-    base_config["layer_tree"] = [
+def test_geopackage_override_path_resolved(raw_config: dict, tmp_path: Path):
+    raw_config["layer_tree"] = [
         {
             "vector_layer": "layer",
             "table": "table",
@@ -194,7 +194,7 @@ def test_geopackage_override_path_resolved(base_config: dict, tmp_path: Path):
     ]
     gpkg_path = tmp_path / "data.gpkg"
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source=gpkg_path,
         project_dir=tmp_path,
@@ -204,10 +204,8 @@ def test_geopackage_override_path_resolved(base_config: dict, tmp_path: Path):
     )
 
 
-def test_layer_source_specific_config_overrides_table(
-    base_config: dict, tmp_path: Path
-):
-    base_config["layer_tree"] = [
+def test_layer_source_specific_config_overrides_table(raw_config: dict, tmp_path: Path):
+    raw_config["layer_tree"] = [
         {
             "vector_layer": "layer",
             "table": "table_1",
@@ -223,7 +221,7 @@ def test_layer_source_specific_config_overrides_table(
         },
     ]
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
@@ -232,9 +230,9 @@ def test_layer_source_specific_config_overrides_table(
 
 
 def test_layer_source_specific_config_overrides_default_data_sources(
-    base_config: dict, tmp_path: Path
+    raw_config: dict, tmp_path: Path
 ):
-    base_config["data_sources"] = {
+    raw_config["data_sources"] = {
         "db": {
             "type": "postgis",
             "service": "service",
@@ -242,7 +240,7 @@ def test_layer_source_specific_config_overrides_default_data_sources(
             "geom_column": "geometry",
         },
     }
-    base_config["layer_tree"] = [
+    raw_config["layer_tree"] = [
         {
             "vector_layer": "layer",
             "table": "table_1",
@@ -258,7 +256,7 @@ def test_layer_source_specific_config_overrides_default_data_sources(
         },
     ]
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
@@ -272,8 +270,8 @@ def test_layer_source_specific_config_overrides_default_data_sources(
     )
 
 
-def test_group_default_scale_applies_to_layer(base_config: dict, tmp_path: Path):
-    base_config["layer_tree"] = [
+def test_group_default_scale_applies_to_layer(raw_config: dict, tmp_path: Path):
+    raw_config["layer_tree"] = [
         {
             "group": "all",
             "defaults": {"scale": {"min": 10}},
@@ -286,7 +284,7 @@ def test_group_default_scale_applies_to_layer(base_config: dict, tmp_path: Path)
         }
     ]
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
@@ -294,8 +292,8 @@ def test_group_default_scale_applies_to_layer(base_config: dict, tmp_path: Path)
     assert compiled.layer_tree[0].children[0].scale == Scale(min=10, max=None)
 
 
-def test_group_default_sources_apply_to_layer(base_config: dict, tmp_path: Path):
-    base_config["data_sources"] = {
+def test_group_default_sources_apply_to_layer(raw_config: dict, tmp_path: Path):
+    raw_config["data_sources"] = {
         "db": {
             "type": "postgis",
             "service": "service",
@@ -305,7 +303,7 @@ def test_group_default_sources_apply_to_layer(base_config: dict, tmp_path: Path)
         },
     }
 
-    base_config["layer_tree"] = [
+    raw_config["layer_tree"] = [
         {
             "group": "all",
             "defaults": {
@@ -327,7 +325,7 @@ def test_group_default_sources_apply_to_layer(base_config: dict, tmp_path: Path)
         }
     ]
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
@@ -341,12 +339,12 @@ def test_group_default_sources_apply_to_layer(base_config: dict, tmp_path: Path)
     )
 
 
-def test_layer_map_themes(base_config: dict, tmp_path: Path):
-    base_config["layer_tree"] = [
+def test_layer_map_themes(raw_config: dict, tmp_path: Path):
+    raw_config["layer_tree"] = [
         {"vector_layer": "layer", "table": "table", "map_themes": ["all", "index"]}
     ]
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
@@ -354,8 +352,8 @@ def test_layer_map_themes(base_config: dict, tmp_path: Path):
     assert compiled.layer_tree[0].map_theme_names == ["all", "index"]
 
 
-def test_group_default_map_themes_apply_to_layer(base_config: dict, tmp_path: Path):
-    base_config["layer_tree"] = [
+def test_group_default_map_themes_apply_to_layer(raw_config: dict, tmp_path: Path):
+    raw_config["layer_tree"] = [
         {
             "group": "all",
             "defaults": {"map_themes": ["all"]},
@@ -368,7 +366,7 @@ def test_group_default_map_themes_apply_to_layer(base_config: dict, tmp_path: Pa
         }
     ]
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
@@ -376,8 +374,8 @@ def test_group_default_map_themes_apply_to_layer(base_config: dict, tmp_path: Pa
     assert compiled.layer_tree[0].children[0].map_theme_names == ["all"]
 
 
-def test_merged_group_defaults_apply_to_layer(base_config: dict, tmp_path: Path):
-    base_config["layer_tree"] = [
+def test_merged_group_defaults_apply_to_layer(raw_config: dict, tmp_path: Path):
+    raw_config["layer_tree"] = [
         {
             "group": "all",
             "defaults": {
@@ -407,7 +405,7 @@ def test_merged_group_defaults_apply_to_layer(base_config: dict, tmp_path: Path)
         }
     ]
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
@@ -428,9 +426,9 @@ def test_merged_group_defaults_apply_to_layer(base_config: dict, tmp_path: Path)
 
 
 def test_layer_data_source_overrides_merges_with_global_data_sources(
-    base_config: dict, tmp_path: Path
+    raw_config: dict, tmp_path: Path
 ):
-    base_config["data_sources"] = {
+    raw_config["data_sources"] = {
         "db": {
             "type": "postgis",
             "service": "service",
@@ -439,7 +437,7 @@ def test_layer_data_source_overrides_merges_with_global_data_sources(
             "table": None,
         }
     }
-    base_config["layer_tree"] = [
+    raw_config["layer_tree"] = [
         {
             "vector_layer": "layer",
             "table": "table",
@@ -447,7 +445,7 @@ def test_layer_data_source_overrides_merges_with_global_data_sources(
         },
     ]
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
@@ -462,9 +460,9 @@ def test_layer_data_source_overrides_merges_with_global_data_sources(
 
 
 def test_nested_data_source_overrides_merge_with_global_data_sources(
-    base_config: dict, tmp_path: Path
+    raw_config: dict, tmp_path: Path
 ):
-    base_config["data_sources"] = {
+    raw_config["data_sources"] = {
         "db": {
             "type": "postgis",
             "service": "service",
@@ -473,7 +471,7 @@ def test_nested_data_source_overrides_merge_with_global_data_sources(
             "table": None,
         }
     }
-    base_config["layer_tree"] = [
+    raw_config["layer_tree"] = [
         {
             "group": "all",
             "defaults": {
@@ -504,7 +502,7 @@ def test_nested_data_source_overrides_merge_with_global_data_sources(
         }
     ]
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,

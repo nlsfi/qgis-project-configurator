@@ -21,14 +21,14 @@ from qgis_project_configurator.config_compiler import ConfigCompiler
 from qgis_project_configurator.models import ProjectEntry
 
 
-def test_flat_project_properties_mapped_to_entries(base_config: dict, tmp_path: Path):
-    base_config["project_properties"] = {
+def test_flat_project_properties_mapped_to_entries(raw_config: dict, tmp_path: Path):
+    raw_config["project_properties"] = {
         "property_1": "value",
         "property_2": 2,
     }
 
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
@@ -39,8 +39,8 @@ def test_flat_project_properties_mapped_to_entries(base_config: dict, tmp_path: 
     ]
 
 
-def test_nested_project_properties_mapped_to_entries(base_config: dict, tmp_path: Path):
-    base_config["project_properties"] = {
+def test_nested_project_properties_mapped_to_entries(raw_config: dict, tmp_path: Path):
+    raw_config["project_properties"] = {
         "property_1": {
             "key_1": {
                 "nested_key": "nested_value",
@@ -52,7 +52,7 @@ def test_nested_project_properties_mapped_to_entries(base_config: dict, tmp_path
     }
 
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,

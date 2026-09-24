@@ -22,8 +22,8 @@ from qgis_project_configurator.config_compiler import ConfigCompiler
 from qgis_project_configurator.models import PrintLayout
 
 
-def test_layout_config(base_config: dict, tmp_path: Path):
-    base_config["layouts"] = [
+def test_layout_config(raw_config: dict, tmp_path: Path):
+    raw_config["layouts"] = [
         {
             "layout_file": "./layouts/file.qpt",
             "atlas_coverage_layer": "layer_name",
@@ -31,7 +31,7 @@ def test_layout_config(base_config: dict, tmp_path: Path):
     ]
     config_dir = tmp_path / "config"
     compiled = ConfigCompiler(
-        raw_config=base_config,
+        raw_config=raw_config,
         config_dir=config_dir,
         data_source="db",
         project_dir=tmp_path,

@@ -32,4 +32,5 @@ toc
 tz
 ui
 uic
+unittest
 utils

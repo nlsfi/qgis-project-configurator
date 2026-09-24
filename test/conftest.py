@@ -16,11 +16,23 @@
 # You should have received a copy of the GNU General Public License
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
+from pathlib import Path
+from unittest.mock import MagicMock
+
 import pytest
+
+from qgis_project_configurator.models import (
+    CompiledConfig,
+    GpkgSource,
+    LayerGroup,
+    PostgisSource,
+    Scale,
+    VectorLayer,
+)
 
 
 @pytest.fixture
-def base_config():
+def raw_config():
     return {
         "data_sources": {
             "db": {
@@ -115,3 +127,48 @@ def base_config():
             {"layout_file": "./atlas_template.qpt", "atlas_coverage_layer": "countries"}
         ],
     }
+
+
+@pytest.fixture
+def mock_qgs_project() -> MagicMock:
+    project = MagicMock()
+    project.layerTreeRoot.return_value = MagicMock()
+    return project
+
+
+@pytest.fixture
+def mock_theme_manager() -> MagicMock:
+    return MagicMock()
+
+
+@pytest.fixture
+def compiled_config() -> CompiledConfig:
+    gpkg_source = GpkgSource(type="gpkg", path=Path("/path/data.gpkg"), table="roads")
+    postgis_source = PostgisSource(
+        type="postgis", service="db", schema="public", geom_column="geom", table="roads"
+    )
+    road_layer = VectorLayer(
+        name="Roads",
+        style_file=Path("/styles/roads.qml"),
+        data_source=gpkg_source,
+        scale=Scale(min=0, max=10000),
+        map_theme_names=["all", "infrastructure"],
+    )
+    lake_layer = VectorLayer(
+        name="Lakes",
+        style_file=None,
+        data_source=postgis_source,
+        map_theme_names=["all"],
+        scale=Scale(min=None, max=None),
+    )
+    layer_group = LayerGroup(name="Infrastructure", children=[road_layer])
+
+    return CompiledConfig(
+        layer_tree=[
+            layer_group,
+            lake_layer,
+        ],
+        project_properties=[],
+        layouts=[],
+        metadata={},
+    )
