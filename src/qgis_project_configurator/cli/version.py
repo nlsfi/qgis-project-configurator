@@ -22,7 +22,7 @@ from qgis.core import Qgis
 
 
 def get_version() -> str:
-    """Gets the version of qgis_project_configurator."""
+    """Get the version of qgis_project_configurator."""
     try:
         return metadata.version("qgis_project_configurator")
     except metadata.PackageNotFoundError:
@@ -30,6 +30,6 @@ def get_version() -> str:
 
 
 def get_qgis_version() -> str:
-    """Gets the underlying QGIS version."""
+    """Get the underlying QGIS version."""
     version = Qgis.version()
     return version.split("-")[0]

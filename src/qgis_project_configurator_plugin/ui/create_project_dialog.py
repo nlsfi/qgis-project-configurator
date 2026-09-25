@@ -26,16 +26,26 @@ except ImportError:
     # aliased import for qgis 4 (functionally the same class)
     from processing.gui.algorithm_widget import AlgorithmWidget as AlgorithmDialog
 
+from typing import TYPE_CHECKING
+
 from qgis_project_configurator_plugin.ui.create_project_panel_widget import (
     CreateProjectPanelWidget,
 )
+
+if TYPE_CHECKING:
+    from qgis.core import QgsProcessingAlgorithm
+    from qgis.PyQt.QtWidgets import QWidget
 
 LOGGER = logging.getLogger(__name__)
 
 
 class CreateProjectDialog(AlgorithmDialog):
-    def __init__(self, alg, parent=None) -> None:
-        super().__init__(alg, parent=parent)
+    def __init__(
+        self, algorithm: "QgsProcessingAlgorithm", parent: "QWidget | None" = None
+    ) -> None:
+        super().__init__(algorithm, parent=parent)
 
-    def getParametersPanel(self, alg, parent) -> CreateProjectPanelWidget:
+    def getParametersPanel(
+        self, _algorithm: "QgsProcessingAlgorithm", parent: "QWidget | None"
+    ) -> CreateProjectPanelWidget:
         return CreateProjectPanelWidget(parent)

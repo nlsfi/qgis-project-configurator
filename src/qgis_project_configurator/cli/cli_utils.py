@@ -54,11 +54,11 @@ class LoggingProcessingFeedback(QgsProcessingFeedback):
         super().reportError(error)
 
 
-def run_qgis(func: Callable):  # noqa: ANN201, D103
+def run_qgis(func: Callable):  # noqa: ANN201
     @wraps(func)
     def wrapper(*args, **kwargs):  # noqa: ANN002, ANN003, ANN202
         LOGGER.info("creating qgis")
-        qgs = QgsApplication([], GUIenabled=False)
+        qgs = QgsApplication([], GUIenabled=False)  # noqa: SC200
         LOGGER.info("initializing qgis")
         qgs.initQgis()
 

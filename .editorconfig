@@ -15,6 +15,16 @@ indent_size = 4
 indent_style = space
 indent_size = 2
 
+[*.ui]
+indent_style = space
+indent_size = 2
+max_line_length = 100000
+
+[*.qml]
+indent_style = space
+indent_size = 2
+max_line_length = 100000
+
 [*.md]
 trim_trailing_whitespace = false
 indent_size = 2

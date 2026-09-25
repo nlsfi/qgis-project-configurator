@@ -16,11 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
+import typing
 from pathlib import Path
+from typing import Any
 
 from qgis.core import (
     Qgis,
     QgsProcessingAlgorithm,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
     QgsProcessingOutputFile,
     QgsProcessingParameterBoolean,
     QgsProcessingParameterFileDestination,
@@ -44,10 +48,14 @@ class CreateTemplateMapConfig(QgsProcessingAlgorithm):
     def name(self) -> str:
         return "create-template-map-configuration"
 
+    @typing.override
     def displayName(self) -> str:
         return "Create a template map configuration"
 
-    def initAlgorithm(self, config=None) -> None:
+    @typing.override
+    def initAlgorithm(
+        self, _configuration: dict[str | None, Any] | None = None
+    ) -> None:
         parameters = [
             QgsProcessingParameterFileDestination(
                 self.OUTPUT,
@@ -78,10 +86,17 @@ class CreateTemplateMapConfig(QgsProcessingAlgorithm):
         if not success:
             pass
 
-    def flags(self):  # noqa: ANN201
+    @typing.override
+    def flags(self) -> Qgis.ProcessingAlgorithmFlag:
         return Qgis.ProcessingAlgorithmFlag.CanCancel
 
-    def prepareAlgorithm(self, parameters, context, feedback) -> bool:
+    @typing.override
+    def prepareAlgorithm(
+        self,
+        parameters: dict[str | None, typing.Any],
+        context: "QgsProcessingContext",
+        feedback: "QgsProcessingFeedback | None",
+    ) -> bool:
         """Prepare stage of the processing algorithm.
 
         This runs in the main tread.
@@ -108,14 +123,26 @@ class CreateTemplateMapConfig(QgsProcessingAlgorithm):
 
         return True
 
-    def processAlgorithm(self, parameters, context, feedback) -> dict[str, str]:
-        """Processing method run in a background thread."""
+    @typing.override
+    def processAlgorithm(
+        self,
+        _parameters: dict[str | None, typing.Any],
+        _context: "QgsProcessingContext",
+        _feedback: "QgsProcessingFeedback | None",
+    ) -> dict[str, str]:
+        """Run processing method in a background thread."""
         return {self.OUTPUT: str(self.output_path)}
 
-    def postProcessAlgorithm(self, context, feedback) -> dict:
-        """Post processing stage of the algorithm."""
+    @typing.override
+    def postProcessAlgorithm(
+        self,
+        _context: "QgsProcessingContext",
+        _feedback: "QgsProcessingFeedback | None",
+    ) -> dict:
+        """Run post processing stage of the algorithm."""
         return {}
 
+    @typing.override
     def shortHelpString(self) -> str:
         return (
             "<p>This tool creates a template map configuration. Parameters:</p>"
@@ -127,5 +154,6 @@ class CreateTemplateMapConfig(QgsProcessingAlgorithm):
             "</ul>"
         )
 
-    def createInstance(self):  # noqa: ANN201
+    @typing.override
+    def createInstance(self) -> "CreateTemplateMapConfig":
         return CreateTemplateMapConfig()

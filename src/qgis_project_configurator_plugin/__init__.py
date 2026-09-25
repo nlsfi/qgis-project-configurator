@@ -16,15 +16,21 @@
 # You should have received a copy of the GNU General Public License
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
-from typing import TYPE_CHECKING
+import typing
 
-from qgis_project_configurator_plugin.plugin import Plugin
+from qgis.utils import plugins
 
-if TYPE_CHECKING:
-    from qgis.gui import QgisInterface
+if typing.TYPE_CHECKING:
+    from qgis_project_configurator_plugin.plugin import Plugin
 
 
-def classFactory(  # noqa: D103
-    iface: "QgisInterface",  # noqa: ARG001
-) -> Plugin:
+def classFactory(_) -> "Plugin":  # noqa: ANN001, N802
+    """Class factory."""
+    from qgis_project_configurator_plugin.plugin import Plugin  # noqa: PLC0415
+
     return Plugin()
+
+
+def get_instance() -> "Plugin | None":
+    """Get instance."""
+    return plugins.get(__name__)

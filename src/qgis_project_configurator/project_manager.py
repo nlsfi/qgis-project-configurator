@@ -43,14 +43,14 @@ class ProjectManager:
         self.data_source = data_source
 
     def write_project_entry(self, entry: ProjectEntry) -> None:
-        LOGGER.info(f"Writing project entry: {asdict(entry)}")
+        LOGGER.info("Writing project entry: %s", asdict(entry))
         self.project.writeEntry(scope=entry.scope, key=entry.key, value=entry.value)
 
     def write_project_properties(self, *, store_metadata: bool = False) -> None:
         for entry in self.project_properties:
             # Crs is a special case. Refactor if these become common.
             if entry.scope == "crs":
-                LOGGER.info(f"Setting project crs to: epsg {entry.value}")
+                LOGGER.info("Setting project crs to: epsg %s", entry.value)
                 self.project.setCrs(
                     QgsCoordinateReferenceSystem.fromEpsgId(entry.value)
                 )
