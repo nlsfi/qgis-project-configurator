@@ -1,72 +1,61 @@
-name: QGIS Plugin Tests
+name: Tests
 
 on:
+  pull_request:
   push:
     branches: [ main ]
-    paths:
-      - 'src/**'
-      - '.github/workflows/qgis_plugin.yml'
-  pull_request:
-    branches: [ main ]
-    paths:
-      - 'src/**'
-      - '.github/workflows/qgis_plugin.yml'
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-test-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  unit_tests:
+  test:
     runs-on: ubuntu-latest
     container:
-      image: qgis/qgis:${{ matrix.qgis-image-tags }}
+      image: qgis/qgis:${{ matrix.qgis-image-tag }}
     strategy:
       matrix:
-        qgis-image-tags: [ "3.44.8-noble", "4.0-questing" ]
+        # Adjust image tags as needed
+        qgis-image-tag: [ "3.44.8-noble", "4.0-questing", "latest" ]
       fail-fast: false
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Install dependencies
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history so diff-cover can compare against the main branch
+          fetch-depth: 0
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+
+      - name: Install venv
         run: |
-          apt update
-          apt install -y python3-venv
-          python3 -m venv --system-site-packages .venv
-          .venv/bin/pip3 install -q -r requirements-dev.txt --no-deps --only-binary=:all:
-          .venv/bin/pip3 install . --no-deps
+          uv venv --system-site-packages
+
       - name: Run tests
         run: |
-          .venv/bin/pytest
-        env:
-          QT_QPA_PLATFORM: offscreen
+          uv sync --all-packages --no-group lint --locked --active
+          uv run pytest -v --qgis_disable_gui --cov --cov-report=xml
 
-  plugin_zip_and_security_scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
-        with:
-          python-version: "3.12"
-      # Use extra pip install . to do a non-editable install,
-      # so that .dist-info will go the package instead of .egg-info
-      - name: Install build & security scan dependencies
+      - name: Check code coverage for changed lines
+        if: ${{ matrix.qgis-image-tag == '3.44.8-noble' }}
+        # Check coverage (80% or more) if more than 20 lines changed
         run: |
-          python -m venv --system-site-packages .venv
-          .venv/bin/activate
-          python -m pip install -U setuptools pip bandit
-          pip install -r requirements-dev.txt
-          pip install .
-      - name: Build plugin
+          apt-get update && apt-get install -y jq
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          uv pip install diff_cover
+          uv run --no-sync diff-cover coverage.xml --format json:report.json
+          total_num_lines=$(jq '.["total_num_lines"]' report.json)
+          total_percent_covered=$(jq '.["total_percent_covered"]' report.json)
+          test "$total_num_lines" -le 20 || test "$total_percent_covered" -ge 80
+
+      - name: Check total code coverage
+        if: ${{ matrix.qgis-image-tag == '3.44.8-noble' }}
         run: |
-          .venv/bin/activate
-          qgis-plugin-dev-tools build
-      - name: Scan build
-        run: |
-          .venv/bin/activate
-          mkdir -p build_scan
-          unzip -q dist/*.zip -d build_scan/
-          # Scan for high severity only (-lll), matching qgis policy
-          # https://plugins.qgis.org/docs/security-scanning/tools
-          bandit -r build_scan/ -lll
-      - uses: actions/upload-artifact@v4
-        with:
-          name: plugin-zip
-          path: dist/*.zip
+          uv run coverage report --fail-under=80

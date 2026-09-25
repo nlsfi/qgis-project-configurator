@@ -1,0 +1,33 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v0.6.2
+_src_path: https://github.com/osgeosuomi/qgis-plugin-copier-template.git
+add_github_workflows: true
+insert_copyright_header: true
+is_monorepo_component: false
+min_code_coverage: 80
+plugin_metadata_author: National Land Survey of Finland
+plugin_metadata_email: os@nls.fi
+plugin_metadata_repository_url: https://github.com/nlsfi/qgis-project-configurator
+qgis_plugin_about: "This plugin helps create and maintain QGIS projects using simple\
+    \ YAML configuration files. Instead of storing all project settings in a QGIS\
+    \ project file, the project structure is defined in a human-readable configuration\
+    \ that specifies layer order, data sources, and the QML style file used for each\
+    \ layer.\n\n    When a configuration file is loaded, the plugin automatically\
+    \ creates a QGIS project with the required layers and applies the configured styles.\
+    \ This makes it easy to build projects consistently and reduces the amount of\
+    \ manual setup required.\n\n    Styles can be edited directly in QGIS and exported\
+    \ back to their original QML files. Because style files are stored separately\
+    \ from project definitions, the same styles can be reused across multiple projects.\
+    \ Updating a shared style only needs to be done once, and the changes become available\
+    \ wherever that style is used.\n\n    Using YAML files also makes project definitions\
+    \ easier to manage in Git. Changes are clearly visible, comparisons between versions\
+    \ are straightforward, and merge conflicts are easier to resolve than with traditional\
+    \ QGIS project files."
+qgis_plugin_class: Plugin
+qgis_plugin_description: Create QGIS projects from simple YAML configuration files.
+    The plugin loads layers, data sources, and styles automatically, and allows style
+    changes made in QGIS to be saved back to shared QML style files.
+qgis_plugin_module: qgis_project_configurator_plugin
+qgis_plugin_name: QGIS Project Configurator
+qgis_version: QGIS3 & QGIS4
+setup_translations: false

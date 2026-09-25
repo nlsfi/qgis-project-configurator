@@ -16,32 +16,30 @@
 # You should have received a copy of the GNU General Public License
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
-import sys
-from pathlib import Path
+from typing import TYPE_CHECKING
 
-v = sys.argv[1]
+import pytest
 
-# changelog
+from qgis_project_configurator_plugin import classFactory
 
-changelog_file = Path("CHANGELOG.md")
-version_header = f"## [{v}]"
-new_section = "## Unreleased\n\n"
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
-changelog_file.write_text(
-    changelog_file.read_text(encoding="utf-8").replace(
-        version_header, new_section + version_header, 1
-    ),
-    encoding="utf-8",
-)
+    from pytest_qgis import QgisInterface
 
-# init
+    from qgis_project_configurator_plugin.plugin import Plugin
 
-init_file = Path("src/qgis_project_configurator/__init__.py")
-init_line_to_replace = f'__version__ = "{v}"'
 
-init_file.write_text(
-    init_file.read_text(encoding="utf-8").replace(
-        init_line_to_replace, f'__version__ = "{v}.post0"', 1
-    ),
-    encoding="utf-8",
-)
+@pytest.fixture
+def plugin_loaded(qgis_iface: "QgisInterface") -> "Iterator[Plugin]":
+    plugin = classFactory(qgis_iface)
+    plugin.initGui()
+
+    yield plugin
+
+    plugin.unload()
+
+
+def test_plugin_loads_without_errors(plugin_loaded: "Plugin") -> None:
+    assert plugin_loaded.toolbar is not None
+    # TODO: write more meaningful test, example from qgis-project-copier-template
