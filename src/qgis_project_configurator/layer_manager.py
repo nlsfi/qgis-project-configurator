@@ -135,7 +135,7 @@ class LayerManager:
             feedback.pushInfo(f"{level * 2 * NON_BREAK_SPACE}{node.name}")
             group = parent_group.addGroup(node.name)
             if group is None:
-                feedback.reportError("Cannot create group")
+                feedback.reportError(f"Cannot create group {node.name}")
                 return
             group.setExpanded(False)
             for child in node.children:
@@ -165,6 +165,7 @@ class LayerManager:
             elif isinstance(node.data_source, PostgisSource):
                 layer = self._load_postgis_layer(node.name, node.data_source)
             else:
+                profiler.end()
                 return  # TODO: Only gpkg / postgis vector layers supported
             if layer.isValid():
                 feedback.pushInfo(f"{level * 2 * NON_BREAK_SPACE}{node.name}")
@@ -184,6 +185,7 @@ class LayerManager:
             added_layer = self.project.addMapLayer(layer, addToLegend=False)
             if added_layer is None:
                 feedback.reportError("Adding layer to project failed")
+                profiler.end()
                 return
 
             if parent_group is not None:

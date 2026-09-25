@@ -32,8 +32,6 @@ from qgis_project_configurator.models import (
 )
 from qgis_project_configurator.qgis_utils import save_style
 
-NON_BREAK_SPACE = "\xa0"
-
 LOGGER = logging.getLogger(__name__)
 
 
