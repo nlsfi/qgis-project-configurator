@@ -48,10 +48,10 @@ def setup_parser(subparsers: argparse._SubParsersAction) -> None:
 def _get_metadata(args: GetMetadataArgs) -> None:
     config = get_config(args.config)
     if isinstance(config, dict):
-        metadata = config.get("metadata", {})
+        metadata = config.get("metadata") or {}
         if args.key:
             value = metadata.get(args.key)
             if value is not None:
-                print(value)
+                print(dumps(value, indent=2, default=str))
         else:
             print(dumps(metadata, indent=2, default=str))
