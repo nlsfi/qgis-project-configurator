@@ -7,6 +7,7 @@
 - Add cli command for querying metadata from config file
 - Add cli support for displaying library & qgis version
 - Unify cli commands under a single entrypoint
+- Add option to use flow style syntax for layers in config template
 
 ## [0.1.2] - 2026-09-09
 
