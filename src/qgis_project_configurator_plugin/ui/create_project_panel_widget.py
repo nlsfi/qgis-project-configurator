@@ -17,6 +17,7 @@
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
+import typing
 from importlib import resources
 from pathlib import Path
 
@@ -99,7 +100,8 @@ class CreateProjectPanelWidget(QgsPanelWidget, CreateProjectPanelWidgetBase):  #
         for version in product_versions:
             self.product_version_combo_box.addItem(version)
 
-    def setParameters(self, parameters) -> None:
+    @typing.override
+    def setParameters(self, parameters: dict[str | None, typing.Any]) -> None:
         self.config_file_widget.setFilePath(parameters.get("CONFIG_PATH"))
         self.product_version_combo_box.setCurrentText(parameters.get("PRODUCT_VERSION"))
 
@@ -110,9 +112,10 @@ class CreateProjectPanelWidget(QgsPanelWidget, CreateProjectPanelWidgetBase):  #
         else:
             self.data_source_combo_box.setCurrentText(CUSTOM_GPKG_LABEL)
 
+    @typing.override
     def createProcessingParameters(
         self,
-        flags=QgsProcessingParametersGenerator.Flags(),  # noqa: B008
+        _flags: "QgsProcessingParametersGenerator.Flag" = QgsProcessingParametersGenerator.Flags(),  # noqa: B008, E501
     ) -> dict | None:
         try:
             return {
@@ -121,4 +124,5 @@ class CreateProjectPanelWidget(QgsPanelWidget, CreateProjectPanelWidgetBase):  #
                 "DATA_SOURCE": self.get_current_data_source(),
             }
         except Exception as e:
-            raise QgsProcessingException(f"Invalid parameters: {e}") from e
+            msg = f"Invalid parameters: {e}"
+            raise QgsProcessingException(msg) from e

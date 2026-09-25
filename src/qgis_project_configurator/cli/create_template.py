@@ -36,7 +36,7 @@ class CreateTemplateArgs(Protocol):
 
 
 def setup_parser(subparsers: argparse._SubParsersAction) -> None:
-    """Registers the create-template subcommand."""
+    """Register the create-template subcommand."""
     parser = subparsers.add_parser(
         "create-template", help="Create a template configuration file."
     )
@@ -69,10 +69,12 @@ def setup_parser(subparsers: argparse._SubParsersAction) -> None:
 def _create_template(args: CreateTemplateArgs) -> None:
     project_instance = QgsProject.instance()
     if project_instance is None:
-        raise RuntimeError("Could not get a QGIS project instance")
+        msg = "Could not get a QGIS project instance"
+        raise RuntimeError(msg)
     success = project_instance.read(str(args.project))
     if not success:
-        raise RuntimeError("Could not read QGIS project")
+        msg = "Could not read QGIS project"
+        raise RuntimeError(msg)
     config = args.config
     style_directory = args.style_directory
     config_style = ConfigStyle.COMPACT_LAYERS if args.compact else ConfigStyle.DEFAULT

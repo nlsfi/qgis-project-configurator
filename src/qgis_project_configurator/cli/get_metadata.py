@@ -29,7 +29,7 @@ class GetMetadataArgs(Protocol):
 
 
 def setup_parser(subparsers: argparse._SubParsersAction) -> None:
-    """Registers the get-metadata subcommand."""
+    """Register the get-metadata subcommand."""
     parser = subparsers.add_parser(
         "get-metadata", help="Get metadata from a configuration file."
     )
@@ -52,6 +52,6 @@ def _get_metadata(args: GetMetadataArgs) -> None:
         if args.key:
             value = metadata.get(args.key)
             if value is not None:
-                print(dumps(value, indent=2, default=str))
+                print(dumps(value, indent=2, default=str))  # noqa: T201
         else:
-            print(dumps(metadata, indent=2, default=str))
+            print(dumps(metadata, indent=2, default=str))  # noqa: T201

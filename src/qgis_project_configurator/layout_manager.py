@@ -24,10 +24,10 @@ from qgis.core import (
     QgsProject,
     QgsReadWriteContext,
 )
-from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtXml import QDomDocument  # noqa: SC200
 
 from qgis_project_configurator.models import PrintLayouts
-from qgis_project_configurator.runtimeprofiler import profile_function
+from qgis_project_configurator.runtime_profiler import profile_function
 
 LOGGER = logging.getLogger(__name__)
 
@@ -52,7 +52,7 @@ class LayoutManager:
             qgs_print_layout.initializeDefaults()
             with layout_config.layout_file.open() as f:
                 template_xml = f.read()
-            doc = QDomDocument()
+            doc = QDomDocument()  # noqa: SC200
             doc.setContent(template_xml)
             _layout_items, success = qgs_print_layout.loadFromTemplate(
                 doc, QgsReadWriteContext()

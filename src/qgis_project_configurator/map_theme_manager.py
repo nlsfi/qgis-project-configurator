@@ -39,7 +39,7 @@ class MapThemeManager:
         for theme_name, layers in themes.items():
             theme_record = QgsMapThemeCollection.MapThemeRecord()
             for layer in layers:
-                LOGGER.info(f"adding layer {layer.name()} to map theme {theme_name}")
+                LOGGER.info("adding layer %s to map theme %s", layer.name(), theme_name)
                 layer_record = QgsMapThemeCollection.MapThemeLayerRecord(layer)
                 theme_record.addLayerRecord(layer_record)
             self.theme_collection.insert(theme_name, theme_record)

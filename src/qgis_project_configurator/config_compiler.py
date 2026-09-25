@@ -97,10 +97,10 @@ class ConfigCompiler:
                 override=node_defaults.get("data_source_overrides", {}),
             )
             if "group" in node:
-                subtree = node.get("children", [])
+                sub_tree = node.get("children", [])
                 compiled_group = LayerGroup(
                     name=node["group"],
-                    children=self._compile_layer_tree(subtree, node_defaults),
+                    children=self._compile_layer_tree(sub_tree, node_defaults),
                 )
                 # only append group if it has children
                 if len(compiled_group.children) > 0:
@@ -135,11 +135,11 @@ class ConfigCompiler:
 
         compiled_style_file = self._compile_style_file(style, style_overrides)
         if compiled_style_file == "hidden":
-            LOGGER.info(f"layer {layer_name} hidden, excluded")
+            LOGGER.info("Layer %s hidden, excluded", layer_name)
             return None
         compiled_data_source = self._compile_data_source(table, data_source_overrides)
         if not compiled_data_source:
-            LOGGER.warning(f"data source not defined for layer {layer_name}, excluded")
+            LOGGER.warning("Data source not defined for layer %s, excluded", layer_name)
             return None
         compiled_scale = self._compile_scale(scale)
         compiled_map_themes = self._compile_map_themes(map_themes)
@@ -154,7 +154,7 @@ class ConfigCompiler:
 
     def _compile_style_file(
         self, style: str | None, style_overrides: dict | None
-    ) -> None | Literal["hidden"] | Path:
+    ) -> Literal["hidden"] | Path | None:
         style_file = None
         if style_overrides and self.product_version:
             style_file = style_overrides.get(self.product_version)
@@ -273,8 +273,8 @@ class ConfigCompiler:
         return compiled_layouts
 
     def _resolve_relative_path(
-        self, subpath: Path | str, relative_to: Path | None = None
+        self, path: Path | str, relative_to: Path | None = None
     ) -> Path:
-        """Resolve a subpath, by default relative to the config dir."""
+        """Resolve path, by default relative to the config dir."""
         relative_to = relative_to or self.config_dir
-        return (relative_to / subpath).resolve()
+        return (relative_to / path).resolve()

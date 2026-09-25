@@ -16,16 +16,19 @@
 # You should have received a copy of the GNU General Public License
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
+import typing
 from pathlib import Path
 
 from qgis.core import (
     Qgis,
     QgsProcessingAlgorithm,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
     QgsProcessingParameterFile,
     QgsProcessingParameterString,
     QgsProject,
 )
-from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMainWindow, QMessageBox, QWidget
 from qgis.utils import iface
 
 from qgis_project_configurator.create_project import (
@@ -49,10 +52,14 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
     def name(self) -> str:
         return "create-visualization-project"
 
+    @typing.override
     def displayName(self) -> str:
         return "Create a visualization project"
 
-    def initAlgorithm(self, config=None) -> None:
+    @typing.override
+    def initAlgorithm(
+        self, _configuration: dict[str | None, typing.Any] | None = None
+    ) -> None:
         parameters = [
             QgsProcessingParameterFile(self.CONFIG_PATH, "Configuration file path"),
             QgsProcessingParameterString(self.PRODUCT_VERSION, "Product version"),
@@ -65,10 +72,13 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
             if not success:
                 pass
 
+    @typing.override
     def flags(self) -> Qgis.ProcessingAlgorithmFlag:
         return Qgis.ProcessingAlgorithmFlag.CanCancel
 
-    def _get_params(self, parameters, context) -> CreateProjectParams:
+    def _get_params(
+        self, parameters: dict[str | None, typing.Any], context: "QgsProcessingContext"
+    ) -> CreateProjectParams:
         return CreateProjectParams(
             config_path=Path(
                 self.parameterAsFile(parameters, self.CONFIG_PATH, context)
@@ -96,7 +106,13 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
                 pass  # TODO: handle fail?
         return QgsProject.instance()
 
-    def prepareAlgorithm(self, parameters, context, feedback) -> bool:
+    @typing.override
+    def prepareAlgorithm(
+        self,
+        parameters: dict[str | None, typing.Any],
+        context: "QgsProcessingContext",
+        feedback: "QgsProcessingFeedback | None",
+    ) -> bool:
         """Prepare stage of the processing algorithm.
 
         This runs in the main tread.
@@ -112,7 +128,8 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
         """
         project = self._check_for_empty_project_or_create_new()
         if project is False:
-            feedback.pushWarning("Cancelling.")
+            if feedback is not None:
+                feedback.pushWarning("Cancelling.")
             return False
 
         params = self._get_params(parameters, context)
@@ -134,21 +151,34 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
             iface.mapCanvas().freeze(False)  # noqa: FBT003
         return True
 
-    def processAlgorithm(self, parameters, context, feedback) -> dict:
-        """Processing method run in a background thread.
+    @typing.override
+    def processAlgorithm(
+        self,
+        _parameters: dict[str | None, typing.Any],
+        _context: "QgsProcessingContext",
+        _feedback: "QgsProcessingFeedback | None",
+    ) -> dict:
+        """Run processing method in a background thread.
 
         Postgresql layers can't be created in the background thread so run the
         whole algorihm in the prepare stage.
         """
         return {}
 
-    def postProcessAlgorithm(self, context, feedback) -> dict:
+    @typing.override
+    def postProcessAlgorithm(
+        self, context, feedback: "QgsProcessingFeedback | None"
+    ) -> dict:
         """Post processing stage of the algorithm."""
         return {}
 
-    def createCustomParametersWidget(self, parent=None):  # noqa: ANN201
+    @typing.override
+    def createCustomParametersWidget(
+        self, parent: QMainWindow | None = None
+    ) -> QWidget | None:
         return CreateProjectDialog(self, parent=parent)
 
+    @typing.override
     def shortHelpString(self) -> str:
         return (
             "<p>This tool creates a QGIS project from a map configuration. Parameters:</p>"  # noqa: E501
@@ -160,5 +190,6 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
             "</ul>"
         )
 
-    def createInstance(self):  # noqa: ANN201
+    @typing.override
+    def createInstance(self) -> "CreateProjectAlgorithm":
         return CreateProjectAlgorithm()

@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
+import typing
+
 from qgis.core import QgsProcessingProvider
 from qgis.PyQt.QtGui import QIcon
 
@@ -30,13 +32,14 @@ from qgis_project_configurator_plugin.algorithms.create_template_config import (
 class ProjectManagerProcessingProvider(QgsProcessingProvider):
     """The provider of our plugin."""
 
+    @typing.override
     def loadAlgorithms(self) -> None:
         """Load each algorithm into the current provider."""
         self.addAlgorithm(CreateProjectAlgorithm())
         self.addAlgorithm(CreateTemplateMapConfig())
 
     def id(self) -> str:
-        """The ID of your plugin, used for identifying the provider.
+        """Return the ID of your plugin, used for identifying the provider.
 
         This string should be a unique, short, character only string,
         eg "qgis" or "gdal". This string should not be localised.
@@ -44,7 +47,7 @@ class ProjectManagerProcessingProvider(QgsProcessingProvider):
         return "nlsmapprojectmanager"
 
     def name(self) -> str:
-        """The human friendly name of your plugin in Processing.
+        """Return the human friendly name of your plugin in Processing.
 
         This string should be as short as possible (e.g. "Lastools", not
         "Lastools version 1.0.1 64-bit") and localised.
@@ -52,7 +55,7 @@ class ProjectManagerProcessingProvider(QgsProcessingProvider):
         return self.tr("NLS Project Manager")
 
     def icon(self) -> QIcon:
-        """Should return a QIcon which is used for your provider inside
+        """Return the QIcon which is used for your provider inside
         the Processing toolbox.
         """  # noqa: D205
         return QgsProcessingProvider.icon(self)
