@@ -115,8 +115,9 @@ class Plugin:
 
     def unload(self) -> None:
         """Unload plugin."""
-        iface.mainWindow().removeToolBar(self.toolbar)
-        self.toolbar = None
+        if self.toolbar:
+            iface.mainWindow().removeToolBar(self.toolbar)
+            self.toolbar = None
 
         QgsApplication.processingRegistry().removeProvider(self.processing_provider)  # noqa: QGS202
 

@@ -27,8 +27,7 @@ from qgis_project_configurator.cli import (
 )
 
 
-def main() -> None:
-    """Main cli entrypoint."""
+def main() -> None:  # noqa: D103
     parser = argparse.ArgumentParser(description="QGIS Project Configurator CLI")
     parser.add_argument(
         "--version",
@@ -43,7 +42,7 @@ def main() -> None:
         help="Show qgis version and exit.",
     )
 
-    subparsers = parser.add_subparsers(title="commands", dest="command", required=True)
+    subparsers = parser.add_subparsers(title="commands", dest="command", required=True)  # noqa: SC200
 
     create_project.setup_parser(subparsers)
     create_template.setup_parser(subparsers)

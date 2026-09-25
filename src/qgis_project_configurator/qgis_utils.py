@@ -23,7 +23,7 @@ from qgis.core import QgsMapLayer, QgsProject
 
 def read_project_entry(
     project: QgsProject, scope: str, key: str, default_value: None = None
-) -> None | Path | str:
+) -> Path | str | None:
     """Read an entry from a QGIS project.
 
     Automatically transforms paths to pathlib.Path.

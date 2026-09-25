@@ -45,7 +45,7 @@ class CreateProjectArgs(Protocol):
 
 
 def setup_parser(subparsers: argparse._SubParsersAction) -> None:
-    """Registers the create-project subcommand."""
+    """Register the create-project subcommand."""
     parser = subparsers.add_parser("create-project", help="Create a QGIS project.")
     parser.add_argument(
         "--project",
@@ -100,7 +100,8 @@ def _str_or_path(value: str) -> str | Path:
 def _create_project(args: CreateProjectArgs) -> None:
     project = QgsProject.instance()
     if not project:
-        raise RuntimeError("Could not get a QGIS project instance")
+        msg = "Could not get a QGIS project instance"
+        raise RuntimeError(msg)
     project_path = args.project
     config_path = args.config
     data_source = args.data_source

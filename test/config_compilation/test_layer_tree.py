@@ -19,7 +19,9 @@ from pathlib import Path
 
 from qgis_project_configurator.config_compiler import ConfigCompiler
 from qgis_project_configurator.models import (
+    EmbeddedLayerGroup,
     GpkgSource,
+    LayerGroup,
     PostgisSource,
     Scale,
     VectorLayer,
@@ -43,6 +45,8 @@ def test_layer_default_style_resolved_no_product_version(
         data_source="db",
         project_dir=tmp_path,
     ).compile()
+
+    assert isinstance(compiled.layer_tree[0], VectorLayer)
     assert compiled.layer_tree[0].style_file == tmp_path / "style.qml"
 
 
@@ -64,6 +68,8 @@ def test_layer_default_style_resolved_with_product_version(
         project_dir=tmp_path,
         product_version="this-has-no-style",
     ).compile()
+
+    assert isinstance(compiled.layer_tree[0], VectorLayer)
     assert compiled.layer_tree[0].style_file == tmp_path / "style.qml"
 
 
@@ -83,6 +89,8 @@ def test_layer_style_overrides_resolved(base_config: dict, tmp_path: Path):
         project_dir=tmp_path,
         product_version="public",
     ).compile()
+
+    assert isinstance(compiled.layer_tree[0], VectorLayer)
     assert compiled.layer_tree[0].style_file == tmp_path / "green.qml"
 
 
@@ -133,6 +141,8 @@ def test_layer_postgis_source_constructed_from_table(base_config: dict, tmp_path
         data_source="db",
         project_dir=tmp_path,
     ).compile()
+
+    assert isinstance(compiled.layer_tree[0], VectorLayer)
     assert compiled.layer_tree[0].data_source == PostgisSource(
         type="postgis",
         service="db",
@@ -161,6 +171,8 @@ def test_layer_gpkg_source_constructed_from_table(base_config: dict, tmp_path: P
         data_source="gpkg",
         project_dir=tmp_path,
     ).compile()
+
+    assert isinstance(compiled.layer_tree[0], VectorLayer)
     assert compiled.layer_tree[0].data_source == GpkgSource(
         type="gpkg",
         path=tmp_path / "data.gpkg",
@@ -182,6 +194,8 @@ def test_embedded_group_project_path_resolved(base_config: dict, tmp_path: Path)
         data_source="db",
         project_dir=project_dir,
     ).compile()
+
+    assert isinstance(compiled.layer_tree[0], EmbeddedLayerGroup)
     assert compiled.layer_tree[0].source == project_dir / "project.qgs"
 
 
@@ -199,6 +213,8 @@ def test_geopackage_override_path_resolved(base_config: dict, tmp_path: Path):
         data_source=gpkg_path,
         project_dir=tmp_path,
     ).compile()
+
+    assert isinstance(compiled.layer_tree[0], VectorLayer)
     assert compiled.layer_tree[0].data_source == GpkgSource(
         type="gpkg", path=gpkg_path, table="table"
     )
@@ -228,6 +244,8 @@ def test_layer_source_specific_config_overrides_table(
         data_source="db",
         project_dir=tmp_path,
     ).compile()
+
+    assert isinstance(compiled.layer_tree[0], VectorLayer)
     assert compiled.layer_tree[0].data_source.table == "table_2"
 
 
@@ -263,6 +281,8 @@ def test_layer_source_specific_config_overrides_default_data_sources(
         data_source="db",
         project_dir=tmp_path,
     ).compile()
+
+    assert isinstance(compiled.layer_tree[0], VectorLayer)
     assert compiled.layer_tree[0].data_source == PostgisSource(
         type="postgis",
         service="service_2",
@@ -291,6 +311,9 @@ def test_group_default_scale_applies_to_layer(base_config: dict, tmp_path: Path)
         data_source="db",
         project_dir=tmp_path,
     ).compile()
+
+    assert isinstance(compiled.layer_tree[0], LayerGroup)
+    assert isinstance(compiled.layer_tree[0].children[0], VectorLayer)
     assert compiled.layer_tree[0].children[0].scale == Scale(min=10, max=None)
 
 
@@ -332,6 +355,9 @@ def test_group_default_sources_apply_to_layer(base_config: dict, tmp_path: Path)
         data_source="db",
         project_dir=tmp_path,
     ).compile()
+
+    assert isinstance(compiled.layer_tree[0], LayerGroup)
+    assert isinstance(compiled.layer_tree[0].children[0], VectorLayer)
     assert compiled.layer_tree[0].children[0].data_source == PostgisSource(
         type="postgis",
         service="group_service",
@@ -351,6 +377,8 @@ def test_layer_map_themes(base_config: dict, tmp_path: Path):
         data_source="db",
         project_dir=tmp_path,
     ).compile()
+
+    assert isinstance(compiled.layer_tree[0], VectorLayer)
     assert compiled.layer_tree[0].map_theme_names == ["all", "index"]
 
 
@@ -373,6 +401,9 @@ def test_group_default_map_themes_apply_to_layer(base_config: dict, tmp_path: Pa
         data_source="db",
         project_dir=tmp_path,
     ).compile()
+
+    assert isinstance(compiled.layer_tree[0], LayerGroup)
+    assert isinstance(compiled.layer_tree[0].children[0], VectorLayer)
     assert compiled.layer_tree[0].children[0].map_theme_names == ["all"]
 
 
@@ -412,6 +443,9 @@ def test_merged_group_defaults_apply_to_layer(base_config: dict, tmp_path: Path)
         data_source="db",
         project_dir=tmp_path,
     ).compile()
+
+    assert isinstance(compiled.layer_tree[0], LayerGroup)
+    assert isinstance(compiled.layer_tree[0].children[0], LayerGroup)
     assert compiled.layer_tree[0].children[0].children[0] == VectorLayer(
         name="layer",
         data_source=PostgisSource(
@@ -452,6 +486,8 @@ def test_layer_data_source_overrides_merges_with_global_data_sources(
         data_source="db",
         project_dir=tmp_path,
     ).compile()
+
+    assert isinstance(compiled.layer_tree[0], VectorLayer)
     assert compiled.layer_tree[0].data_source == PostgisSource(
         type="postgis",
         service="service",
@@ -509,6 +545,10 @@ def test_nested_data_source_overrides_merge_with_global_data_sources(
         data_source="db",
         project_dir=tmp_path,
     ).compile()
+
+    assert isinstance(compiled.layer_tree[0], LayerGroup)
+    assert isinstance(compiled.layer_tree[0].children[0], LayerGroup)
+    assert isinstance(compiled.layer_tree[0].children[0].children[0], VectorLayer)
     assert compiled.layer_tree[0].children[0].children[0].data_source == PostgisSource(
         type="postgis",
         service="10k",

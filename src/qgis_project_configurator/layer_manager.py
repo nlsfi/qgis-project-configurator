@@ -42,7 +42,7 @@ from qgis_project_configurator.models import (
     Scale,
     VectorLayer,
 )
-from qgis_project_configurator.runtimeprofiler import profile_function, profiler
+from qgis_project_configurator.runtime_profiler import profile_function, profiler
 
 NON_BREAK_SPACE = "\xa0"
 
@@ -98,12 +98,12 @@ class LayerManager:
     @profile_function("load style")
     def _load_layer_style(self, style_file: Path, layer: QgsMapLayer) -> None:
         if style_file.exists():
-            LOGGER.info(f"loading style from: {style_file}")
+            LOGGER.info("Loading style from: %s", style_file)
             message, success = layer.loadNamedStyle(str(style_file))
             if not success:
-                LOGGER.error(f"loading style failed: {message}")
+                LOGGER.error("Loading style failed: %s", message)
         else:
-            LOGGER.error(f"style file not found: {style_file}")
+            LOGGER.error("Style file not found: %s", style_file)
 
     @profile_function("set scale")
     def _set_layer_scale(self, layer: QgsMapLayer, scale: Scale) -> None:
@@ -147,7 +147,7 @@ class LayerManager:
             feedback.pushInfo(
                 f"{level * 2 * NON_BREAK_SPACE}{node.name} - embedded group from {node.source}"  # noqa: E501
             )
-            LOGGER.info(f"embedding group {node.name} from {node.source}")
+            LOGGER.info("Embedding group %s from %s", node.name, node.source)
             embedded_group = self.project.createEmbeddedGroup(
                 node.name,
                 str(node.source),

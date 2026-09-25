@@ -28,12 +28,13 @@ from qgis_project_configurator.layer_manager import LayerManager
 from qgis_project_configurator.layout_manager import LayoutManager
 from qgis_project_configurator.map_theme_manager import MapThemeManager
 from qgis_project_configurator.project_manager import ProjectManager
-from qgis_project_configurator.runtimeprofiler import profiler
+from qgis_project_configurator.runtime_profiler import profiler
 
 LOGGER = logging.getLogger(__name__)
 
 
-def create_project(  # noqa: PLR0913 TODO: refactor to use CreateProjectParams
+# TODO: refactor to use CreateProjectParams
+def create_project(  # noqa: PLR0913, PLR0917
     project: QgsProject,
     config: dict,
     data_source: str | Path,
@@ -45,7 +46,7 @@ def create_project(  # noqa: PLR0913 TODO: refactor to use CreateProjectParams
     store_metadata: bool = False,
     dry_run: bool = False,
 ) -> None:
-    """The main method for creating a qgis project.
+    """Create a QGIS project from configuration.
 
     To be used both in plugin and library code.
     """
@@ -88,6 +89,6 @@ def write_project(project: QgsProject, project_path: Path) -> None:
         project_path.parent.mkdir(parents=True, exist_ok=True)
     write_success = project.write(str(project_path))
     if not write_success:
-        LOGGER.error(f"Could not write to project: {project_path}")
+        LOGGER.error("Could not write to project: %s", project_path)
         return
-    LOGGER.info(f"Project written to {project_path}")
+    LOGGER.info("Project written to %s", project_path)

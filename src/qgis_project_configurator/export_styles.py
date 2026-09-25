@@ -36,19 +36,19 @@ def export_layer_styles(layers: list[QgsMapLayer], project: QgsProject) -> None:
         project, scope="qgis_project_configurator", key="config_path"
     )
     if not isinstance(config_path, Path):
-        LOGGER.error(f"Config file path does not exist: {config_path}")
+        LOGGER.error("Config file path does not exist: %s", config_path)
         return
     product_version = read_project_entry(
         project, scope="qgis_project_configurator", key="product_version"
     )
     if not isinstance(product_version, str):
-        LOGGER.error(f"Product version malformatted: {product_version}")
+        LOGGER.error("Product version malformatted: %s", product_version)
         return
     data_source = read_project_entry(
         project, scope="qgis_project_configurator", key="data_source"
     )
     if not isinstance(data_source, (str, Path)):
-        LOGGER.error(f"Data source malformatted: {data_source}")
+        LOGGER.error("Data source malformatted: %s", data_source)
         return
     if config_path and product_version and data_source:
         compiled_config = ConfigCompiler(

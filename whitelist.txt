@@ -14,11 +14,13 @@ contextvars
 crs
 csv
 dataframe
+dicts
 dropdown
 epsg
 fid
 fids
 formatter
+func
 funcargs
 gdal
 geocode
@@ -47,8 +49,11 @@ osgeo
 osr
 param
 params
+parsers
 pointz
 polyline
+posix
+postgis
 proj
 pyqt
 qgis
@@ -59,6 +64,7 @@ removeprefix
 removesuffix
 renderer
 replacer
+representer
 reprojected
 rgb
 rgba
@@ -71,6 +77,7 @@ selectable
 singleband
 srid
 stacklevel
+subparsers
 taskify
 teardown
 tmp
