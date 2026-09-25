@@ -159,6 +159,7 @@ source = ["src", "**/site-packages"]
 [tool.coverage.run]
 branch = true
 source_pkgs = ["qgis_project_configurator_plugin", "qgis_project_configurator"]
+omit = ["src/qgis_project_configurator/cli/*"]
 
 [tool.coverage.report]
 exclude_also = [
