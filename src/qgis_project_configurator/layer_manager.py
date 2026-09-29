@@ -50,6 +50,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 class LayerManager:
+    """Manage QGIS map layers."""
+
     def __init__(
         self,
         project: QgsProject,
@@ -218,6 +220,7 @@ class LayerManager:
 
     @profile_function("Load layers")
     def load_layers(self, feedback: QgsProcessingFeedback) -> None:
+        """Load layers to the QGIS project."""
         feedback.pushInfo("Loading layers:")
         for node in self.config.layer_tree:
             self._add_layer_tree_node(node, feedback=feedback)

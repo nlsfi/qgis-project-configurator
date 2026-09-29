@@ -37,9 +37,11 @@ CUSTOM_GPKG_LABEL = "Custom Geopackage"
 
 
 class CreateProjectPanelWidget(QgsPanelWidget, CreateProjectPanelWidgetBase):  # type: ignore [valid-type, misc]
+    """Widget for creating project."""
+
     config_file_widget: QgsFileWidget
     data_source_combo_box: QComboBox
-    product_version_combo_box: QComboBox
+    style_variant_combo_box: QComboBox
     geopackage_file_widget: QgsFileWidget
     geopackage_file_label: QLabel
 
@@ -53,57 +55,57 @@ class CreateProjectPanelWidget(QgsPanelWidget, CreateProjectPanelWidgetBase):  #
         self.geopackage_file_widget.setFilter("Geopackage files (*.gpkg)")
         self.config_file_widget.setFilter("YAML files (*.yaml *.yml)")
 
-        self.config_file_widget.fileChanged.connect(self.on_config_file_change)
+        self.config_file_widget.fileChanged.connect(self._on_config_file_change)
         self.data_source_combo_box.currentTextChanged.connect(
-            self.on_data_source_change
+            self._on_data_source_change
         )
 
         # Form initialization
         self.geopackage_file_widget.hide()
         self.geopackage_file_label.hide()
 
-    def on_config_file_change(self, config_file: str) -> None:
+    def _on_config_file_change(self, config_file: str) -> None:
         if config_file and Path(config_file).exists():
             self.config = load_config(Path(config_file))
         else:
             self.config = None
-        self.populate_combo_boxes()
+        self._populate_combo_boxes()
 
     def _set_override_geopackage_visible(self, visible: bool) -> None:  # noqa: FBT001
         self.geopackage_file_label.setVisible(visible)
         self.geopackage_file_widget.setVisible(visible)
 
-    def on_data_source_change(self) -> None:
+    def _on_data_source_change(self) -> None:
         self._set_override_geopackage_visible(self._is_geopackage_override_used())
 
     def _is_geopackage_override_used(self) -> bool:
         return self.data_source_combo_box.currentText() == CUSTOM_GPKG_LABEL
 
-    def get_current_data_source(self):  # noqa: ANN201
+    def _get_current_data_source(self) -> str:
         if self._is_geopackage_override_used():
             return self.geopackage_file_widget.filePath()
         return self.data_source_combo_box.currentText()
 
-    def populate_combo_boxes(self) -> None:
+    def _populate_combo_boxes(self) -> None:
         self.data_source_combo_box.clear()
-        self.product_version_combo_box.clear()
+        self.style_variant_combo_box.clear()
         if self.config is None:
             return
 
         data_sources = self.config.get("data_sources", {})
-        product_versions = self.config.get("product_versions", {})
+        style_variants = self.config.get("style_variants", {})
 
         for data_source_name in data_sources:
             self.data_source_combo_box.addItem(data_source_name)
         self.data_source_combo_box.addItem(CUSTOM_GPKG_LABEL)
 
-        for version in product_versions:
-            self.product_version_combo_box.addItem(version)
+        for version in style_variants:
+            self.style_variant_combo_box.addItem(version)
 
     @typing.override
     def setParameters(self, parameters: dict[str | None, typing.Any]) -> None:
         self.config_file_widget.setFilePath(parameters.get("CONFIG_PATH"))
-        self.product_version_combo_box.setCurrentText(parameters.get("PRODUCT_VERSION"))
+        self.style_variant_combo_box.setCurrentText(parameters.get("STYLE_VARIANT"))
 
         data_source = parameters.get("DATA_SOURCE")
         data_source_index = self.data_source_combo_box.findText(data_source)
@@ -120,8 +122,8 @@ class CreateProjectPanelWidget(QgsPanelWidget, CreateProjectPanelWidgetBase):  #
         try:
             return {
                 "CONFIG_PATH": self.config_file_widget.filePath(),
-                "PRODUCT_VERSION": self.product_version_combo_box.currentText(),
-                "DATA_SOURCE": self.get_current_data_source(),
+                "STYLE_VARIANT": self.style_variant_combo_box.currentText(),
+                "DATA_SOURCE": self._get_current_data_source(),
             }
         except Exception as e:
             msg = f"Invalid parameters: {e}"

@@ -28,7 +28,7 @@ from qgis_project_configurator.models import (
 )
 
 
-def test_layer_default_style_resolved_no_product_version(
+def test_layer_default_style_resolved_no_style_variant(
     base_config: dict, tmp_path: Path
 ):
     base_config["layer_tree"] = [
@@ -50,7 +50,7 @@ def test_layer_default_style_resolved_no_product_version(
     assert compiled.layer_tree[0].style_file == tmp_path / "style.qml"
 
 
-def test_layer_default_style_resolved_with_product_version(
+def test_layer_default_style_resolved_with_style_variant(
     base_config: dict, tmp_path: Path
 ):
     base_config["layer_tree"] = [
@@ -66,7 +66,7 @@ def test_layer_default_style_resolved_with_product_version(
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
-        product_version="this-has-no-style",
+        style_variant="this-has-no-style",
     ).compile()
 
     assert isinstance(compiled.layer_tree[0], VectorLayer)
@@ -87,7 +87,7 @@ def test_layer_style_overrides_resolved(base_config: dict, tmp_path: Path):
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
-        product_version="public",
+        style_variant="public",
     ).compile()
 
     assert isinstance(compiled.layer_tree[0], VectorLayer)
@@ -114,7 +114,7 @@ def test_hidden_layer_excluded(base_config: dict, tmp_path: Path):
         config_dir=tmp_path,
         data_source="db",
         project_dir=tmp_path,
-        product_version="secret",
+        style_variant="secret",
     ).compile()
     assert len(compiled.layer_tree) == 1
     assert compiled.layer_tree[0].name == "layer2"

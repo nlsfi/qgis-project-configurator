@@ -24,11 +24,15 @@ from qgis.core import QgsMapLayer
 
 @dataclass
 class CreateProjectParams:
+    """Parameters for creating a project."""
+
     config_path: Path
-    product_version: str
+    style_variant: str
     data_source: Path | str
 
 
 @dataclass
 class ExportStylesParams:
+    """Parameters for exporting styles."""
+
     selected_layers: list[QgsMapLayer]

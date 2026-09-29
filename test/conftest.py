@@ -60,7 +60,7 @@ def base_config():
                 "table": None,
             },
         },
-        "product_versions": ["secret", "public"],
+        "style_variants": ["secret", "public"],
         "layer_tree": [
             {
                 "group": "all",

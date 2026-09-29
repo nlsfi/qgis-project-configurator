@@ -55,21 +55,24 @@ def _merge_dicts(defaults: dict, override: dict) -> dict:
 
 
 class ConfigCompiler:
+    """Compile parsed configuration dict into unambiguous dataclasses."""
+
     def __init__(
         self,
         raw_config: dict,
         config_dir: Path,
         data_source: str | Path,
         project_dir: Path,
-        product_version: str | None = None,
+        style_variant: str | None = None,
     ) -> None:
         self.raw_config = raw_config
         self.config_dir = config_dir
         self.data_source = data_source
-        self.product_version = product_version
+        self.style_variant = style_variant
         self.project_dir = project_dir
 
     def compile(self) -> CompiledConfig:
+        """Compile the config."""
         return CompiledConfig(
             layer_tree=self._compile_layer_tree(self.raw_config.get("layer_tree", [])),
             project_properties=self._compile_project_properties(
@@ -156,8 +159,8 @@ class ConfigCompiler:
         self, style: str | None, style_overrides: dict | None
     ) -> Literal["hidden"] | Path | None:
         style_file = None
-        if style_overrides and self.product_version:
-            style_file = style_overrides.get(self.product_version)
+        if style_overrides and self.style_variant:
+            style_file = style_overrides.get(self.style_variant)
             if not style_file:
                 style_file = style
         elif style:

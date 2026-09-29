@@ -27,14 +27,14 @@
       <widget class="QgsFileWidget" name="config_file_widget"/>
      </item>
      <item row="1" column="0">
-      <widget class="QLabel" name="product_version_label">
+      <widget class="QLabel" name="style_variant_label">
        <property name="text">
-        <string>Product version:</string>
+        <string>Style variant:</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QComboBox" name="product_version_combo_box"/>
+      <widget class="QComboBox" name="style_variant_combo_box"/>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="data_source_label">
