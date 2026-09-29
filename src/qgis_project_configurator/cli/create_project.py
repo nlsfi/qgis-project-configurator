@@ -36,10 +36,12 @@ LOGGER = logging.getLogger(__name__)
 
 
 class CreateProjectArgs(Protocol):
+    """Args for creating a project."""
+
     project: Path
     config: Path
     data_source: str | Path
-    product_version: str
+    style_variant: str
     dry_run: bool
     store_metadata: bool
 
@@ -69,16 +71,16 @@ def setup_parser(subparsers: argparse._SubParsersAction) -> None:
         required=True,
     )
     parser.add_argument(
-        "--product-version",
+        "--style-variant",
         type=str,
-        help="Which version of a map product to generate.",
+        help="Which style variant to use.",
     )
     parser.add_argument(
         "--store-metadata",
         action="store_true",
         help=(
             "Store project creation metadata (config file location, "
-            "product version) into the created qgis project."
+            "style variant) into the created qgis project."
         ),
     )
     parser.add_argument(
@@ -105,14 +107,14 @@ def _create_project(args: CreateProjectArgs) -> None:
     project_path = args.project
     config_path = args.config
     data_source = args.data_source
-    product_version = args.product_version
+    style_variant = args.style_variant
     dry_run = args.dry_run
     create_project(
         project=project,
         config=load_config(config_path),
         config_path=config_path,
         data_source=data_source,
-        product_version=product_version,
+        style_variant=style_variant,
         target_project_path=project_path,
         store_metadata=args.store_metadata,
         dry_run=dry_run,

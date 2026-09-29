@@ -42,14 +42,16 @@ from qgis_project_configurator_plugin.ui.create_project_dialog import (
 
 
 class CreateProjectAlgorithm(QgsProcessingAlgorithm):
+    """Algorithm wrapper for create_project."""
+
     CONFIG_PATH = "CONFIG_PATH"
-    PRODUCT_VERSION = "PRODUCT_VERSION"
+    STYLE_VARIANT = "STYLE_VARIANT"
     DATA_SOURCE = "DATA_SOURCE"
 
     def __init__(self) -> None:
         super().__init__()
 
-    def name(self) -> str:
+    def name(self) -> str:  # noqa: D102
         return "create-visualization-project"
 
     @typing.override
@@ -62,7 +64,7 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
     ) -> None:
         parameters = [
             QgsProcessingParameterFile(self.CONFIG_PATH, "Configuration file path"),
-            QgsProcessingParameterString(self.PRODUCT_VERSION, "Product version"),
+            QgsProcessingParameterString(self.STYLE_VARIANT, "Style variant"),
             QgsProcessingParameterString(self.DATA_SOURCE, "Data Source"),
         ]
         for parameter in parameters:
@@ -83,8 +85,8 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
             config_path=Path(
                 self.parameterAsFile(parameters, self.CONFIG_PATH, context)
             ),
-            product_version=self.parameterAsString(
-                parameters, self.PRODUCT_VERSION, context
+            style_variant=self.parameterAsString(
+                parameters, self.STYLE_VARIANT, context
             ),
             data_source=self.parameterAsString(parameters, self.DATA_SOURCE, context),
         )
@@ -141,7 +143,7 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
                 project=project,
                 config=config,
                 data_source=params.data_source,
-                product_version=params.product_version,
+                style_variant=params.style_variant,
                 config_path=params.config_path,
                 target_project_path=Path("placeholder"),  # TODO: path not needed here
                 store_metadata=True,
@@ -167,7 +169,9 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
 
     @typing.override
     def postProcessAlgorithm(
-        self, context, feedback: "QgsProcessingFeedback | None"
+        self,
+        context,  # noqa: ANN001
+        feedback: "QgsProcessingFeedback | None",
     ) -> dict:
         """Post processing stage of the algorithm."""
         return {}
@@ -184,7 +188,7 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
             "<p>This tool creates a QGIS project from a map configuration. Parameters:</p>"  # noqa: E501
             "<ul>"
             "<li><b>Configuration file</b>: Select the map configuration yaml.</li>"
-            "<li><b>Product version</b>: </li>"
+            "<li><b>Style variant</b>: </li>"
             "<li><b>Data source</b>: Select the datasource from the options defined in the configuration file. The datasource could be overridden with a custom geopackage.</li>"  # noqa: E501
             '<li><b>Geopackage</b>: Custom geopackage used as a data source. "Custom geopackage" must be selected as a Data source. Optional if predefined data source is used</li>'  # noqa: E501
             "</ul>"

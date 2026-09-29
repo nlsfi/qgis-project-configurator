@@ -28,25 +28,28 @@ LOGGER = logging.getLogger(__name__)
 
 
 class ProjectManager:
+    """Manage project properties."""
+
     def __init__(
         self,
         project: QgsProject,
         project_properties: ProjectProperties,
         config_path: Path,
-        product_version: str,
+        style_variant: str,
         data_source: Path | str,
     ) -> None:
         self.project = project
         self.project_properties = project_properties
         self.config_path = config_path
-        self.product_version = product_version
+        self.style_variant = style_variant
         self.data_source = data_source
 
-    def write_project_entry(self, entry: ProjectEntry) -> None:
+    def _write_project_entry(self, entry: ProjectEntry) -> None:
         LOGGER.info("Writing project entry: %s", asdict(entry))
         self.project.writeEntry(scope=entry.scope, key=entry.key, value=entry.value)
 
     def write_project_properties(self, *, store_metadata: bool = False) -> None:
+        """Write project properties to the created QGIS project."""
         for entry in self.project_properties:
             # Crs is a special case. Refactor if these become common.
             if entry.scope == "crs":
@@ -55,24 +58,24 @@ class ProjectManager:
                     QgsCoordinateReferenceSystem.fromEpsgId(entry.value)
                 )
             else:
-                self.write_project_entry(entry)
+                self._write_project_entry(entry)
         if store_metadata:
             self._write_project_creation_metadata()
 
     def _write_project_creation_metadata(self) -> None:
         LOGGER.info("writing project creation metadata into project")
-        self.write_project_entry(
+        self._write_project_entry(
             ProjectEntry(
                 scope="qgis_project_configurator",
                 key="config_path",
                 value=str(self.config_path.resolve()),
             )
         )
-        self.write_project_entry(
+        self._write_project_entry(
             ProjectEntry(
                 scope="qgis_project_configurator",
-                key="product_version",
-                value=self.product_version,
+                key="style_variant",
+                value=self.style_variant,
             )
         )
         data_source = (
@@ -80,7 +83,7 @@ class ProjectManager:
             if isinstance(self.data_source, Path)
             else self.data_source
         )
-        self.write_project_entry(
+        self._write_project_entry(
             ProjectEntry(
                 scope="qgis_project_configurator", key="data_source", value=data_source
             )

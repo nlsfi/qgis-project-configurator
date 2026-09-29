@@ -35,11 +35,15 @@ from qgis_project_configurator.qgis_utils import save_style
 
 @dataclass
 class StyleFolderConfig:
+    """Style folder config."""
+
     absolute: Path
     relative: Path
 
 
 class ConfigStyle(Enum):
+    """Syntax style for layer syntax in the template."""
+
     DEFAULT = auto()
     COMPACT_LAYERS = auto()
 
@@ -155,7 +159,7 @@ def create_configuration_template(
             if (config := _tree_node_to_config(node, style_folder_config, feedback))
             is not None
         ],
-        "product_versions": [],
+        "style_variants": [],
         "project_properties": {},
         "layouts": [],
     }

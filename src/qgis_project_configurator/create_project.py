@@ -38,7 +38,7 @@ def create_project(  # noqa: PLR0913, PLR0917
     project: QgsProject,
     config: dict,
     data_source: str | Path,
-    product_version: str,
+    style_variant: str,
     config_path: Path,
     target_project_path: Path,
     feedback: QgsProcessingFeedback,
@@ -57,7 +57,7 @@ def create_project(  # noqa: PLR0913, PLR0917
         config_dir=config_path.parent,
         data_source=data_source,
         project_dir=target_project_path.parent,
-        product_version=product_version,
+        style_variant=style_variant,
     ).compile()
     if dry_run:
         print(json.dumps(asdict(compiled_config), indent=2, default=str))  # noqa: T201
@@ -76,7 +76,7 @@ def create_project(  # noqa: PLR0913, PLR0917
         project_properties=compiled_config.project_properties,
         config_path=config_path,
         data_source=data_source,
-        product_version=product_version,
+        style_variant=style_variant,
     )
     layer_manager.load_layers(feedback)
     layout_manager.load_layouts(feedback)
