@@ -35,7 +35,7 @@ def test_layer_default_style_resolved_no_style_variant(
         {
             "vector_layer": "layer",
             "style": "./style.qml",
-            "style_overrides": {"public": "./green.qml", "secret": "hidden"},
+            "style_overrides": {"public": "./green.qml", "secret": "exclude"},
             "table": "table",
         },
     ]
@@ -57,7 +57,7 @@ def test_layer_default_style_resolved_with_style_variant(
         {
             "vector_layer": "layer",
             "style": "./style.qml",
-            "style_overrides": {"public": "./green.qml", "secret": "hidden"},
+            "style_overrides": {"public": "./green.qml", "secret": "exclude"},
             "table": "table",
         },
     ]
@@ -78,7 +78,7 @@ def test_layer_style_overrides_resolved(base_config: dict, tmp_path: Path):
         {
             "vector_layer": "layer",
             "style": "./style.qml",
-            "style_overrides": {"public": "./green.qml", "secret": "hidden"},
+            "style_overrides": {"public": "./green.qml", "secret": "exclude"},
             "table": "table",
         },
     ]
@@ -94,12 +94,12 @@ def test_layer_style_overrides_resolved(base_config: dict, tmp_path: Path):
     assert compiled.layer_tree[0].style_file == tmp_path / "green.qml"
 
 
-def test_hidden_layer_excluded(base_config: dict, tmp_path: Path):
+def test_exclude_layer_excluded(base_config: dict, tmp_path: Path):
     base_config["layer_tree"] = [
         {
             "vector_layer": "layer",
             "style": "./style.qml",
-            "style_overrides": {"public": "./green.qml", "secret": "hidden"},
+            "style_overrides": {"public": "./green.qml", "secret": "exclude"},
             "table": "table",
         },
         {
