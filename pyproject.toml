@@ -122,6 +122,10 @@ known-first-party = [
   "PLR0915", # Too many statements
   "ARG001",  # Unused function argument
 ]
+"scripts/*" = [
+  "INP001", # Implicit namespace package
+  "T201",   # print
+]
 
 [tool.flake8]
 max-line-length = 88

@@ -6,6 +6,7 @@ bbox
 centroid
 changelog
 checkable
+cleandoc
 closest
 configs
 configurator
@@ -15,8 +16,10 @@ crs
 csv
 dataframe
 dicts
+docstrings
 dropdown
 epsg
+expr
 fid
 fids
 formatter
@@ -34,6 +37,7 @@ geom
 geoms
 geopackage
 getfixturevalue
+getsource
 globals
 gpkg
 hookimpl
@@ -55,6 +59,7 @@ polyline
 posix
 postgis
 proj
+pydantic
 pyqt
 qgis
 qgs
@@ -85,6 +90,7 @@ tooltip
 tprops
 truthy
 tryfirst
+typeddict
 typehint
 ui
 uic
