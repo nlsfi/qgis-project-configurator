@@ -8,6 +8,10 @@
 A QGIS plugin and command line tool for managing QGIS projects using
 configuration files.
 
+## Configuration
+
+See the [configuration guide](./docs/configuration.md).
+
 ## Development
 
 See [development readme](./DEVELOPMENT.md).

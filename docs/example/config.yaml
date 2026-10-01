@@ -1,0 +1,76 @@
+# yaml-language-server: $schema=../../schema/config.schema.json
+#
+# Example configuration. It shows every part of the format.
+# See ../configuration.md for the guide.
+
+data_sources:
+  db:
+    type: postgis
+    service: naturalearth  # pg_service.conf entry
+    schema: public
+    geom_column: geom
+    table: null  # set per layer
+  gpkg:
+    type: gpkg
+    path: ./data/naturalearth.gpkg  # relative to this file
+    table: null
+
+product_versions: [ public, secret ]
+
+layer_tree:
+  - group: all
+    defaults:
+      # Applies to every layer below, unless a layer or sub group sets it
+      scale: { min: 3000000 }
+      map_themes: [ all ]
+    children:
+      - group: infrastructure
+        defaults:
+          scale: { min: 2000000 }
+        children:
+          - vector_layer: populated_places
+            style: ./styles/populated_places.qml
+            table: populated_places
+            scale: { min: 2000000, max: 500000 }
+          - vector_layer: roads
+            style: ./styles/roads.qml
+            table: roads
+            map_themes: [ all, traffic ]  # replaces the inherited list
+
+      - group: water
+        children:
+          - vector_layer: rivers
+            style: ./styles/rivers.qml
+            table: rivers
+            data_source_overrides:
+              # Only the changed keys. The rest comes from data_sources.db
+              db: { schema: hydrography }
+          - vector_layer: lakes
+            style: hidden  # not in the project...
+            style_overrides:
+              secret: ./styles/lakes.qml  # ...except in the secret version
+            table: lakes
+
+      - vector_layer: countries
+        style: ./styles/countries.qml
+        style_overrides:
+          secret: ./styles/countries_green.qml
+        table: countries
+
+  - embedded_group: basemaps
+    source: ./basemaps.qgz  # relative to the created project
+
+project_properties:
+  crs: 3067  # EPSG code
+  WMSServiceCapabilities: true
+  WMSServiceTitle: Natural Earth
+  WMSExtent: [ "-17.5", "52.8", "54.4", "78.7" ]
+  WMSMaxAtlasFeatures: 100
+
+layouts:
+  - layout_file: ./layouts/atlas_template.qpt
+    atlas_coverage_layer: countries
+
+metadata:
+  owner: GIS team
+  contact: gis@example.com
