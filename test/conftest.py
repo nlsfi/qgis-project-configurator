@@ -112,7 +112,7 @@ def base_config():
                             },
                             {
                                 "vector_layer": "lakes",
-                                "style": "hidden",
+                                "style": "exclude",
                                 "style_overrides": {"secret": "./lakes.qml"},
                                 "table": "lakes",
                             },

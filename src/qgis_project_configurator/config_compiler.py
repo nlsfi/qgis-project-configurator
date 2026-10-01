@@ -137,8 +137,8 @@ class ConfigCompiler:
         map_themes: list | None = layer_config.get("map_themes")
 
         compiled_style_file = self._compile_style_file(style, style_overrides)
-        if compiled_style_file == "hidden":
-            LOGGER.info("Layer %s hidden, excluded", layer_name)
+        if compiled_style_file == "exclude":
+            LOGGER.info("Layer %s excluded", layer_name)
             return None
         compiled_data_source = self._compile_data_source(table, data_source_overrides)
         if not compiled_data_source:
@@ -157,7 +157,7 @@ class ConfigCompiler:
 
     def _compile_style_file(
         self, style: str | None, style_overrides: dict | None
-    ) -> Literal["hidden"] | Path | None:
+    ) -> Literal["exclude"] | Path | None:
         style_file = None
         if style_overrides and self.style_variant:
             style_file = style_overrides.get(self.style_variant)
@@ -165,7 +165,7 @@ class ConfigCompiler:
                 style_file = style
         elif style:
             style_file = style
-        if not style_file or style_file == "hidden":
+        if not style_file or style_file == "exclude":
             return style_file
         return self._resolve_relative_path(style_file)
 
