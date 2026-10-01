@@ -8,7 +8,6 @@ data_sources:
     schema: public
     geom_column: geom
 
-
 style_variants: [minimal, detailed]
 
 layer_tree:
@@ -23,11 +22,11 @@ layer_tree:
           map_themes: [infrastructure, all]
         children:
           - {vector_layer: populated_places, style: ./styles/populated_places.qml, table: 'populated_places', scale: {max: 1000000}}
-          - {vector_layer: roads, style: hidden, style_overrides: {detailed: ./styles/roads.qml}, table: 'roads'}
+          - {vector_layer: roads, style: exclude, style_overrides: {detailed: ./styles/roads.qml}, table: 'roads'}
           - {vector_layer: urban_areas, style: ./styles/urban_areas.qml, table: 'urban_areas', scale: {min: 1000000}}
       - group: water
         defaults:
-          style_overrides: {minimal: hidden}
+          style_overrides: {minimal: exclude}
         children:
           - {vector_layer: lakes, style: ./styles/lakes.qml, table: 'lakes'}
           - {vector_layer: lakes_europe, style: ./styles/lakes.qml, table: 'lakes_europe'}
@@ -47,7 +46,6 @@ project_properties:
   WMSMaxAtlasFeatures: 100
   WMSTileBuffer: 100
   crs: 3067
-
 
 metadata:
   metadata_key_1: value_1
