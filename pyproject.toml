@@ -42,6 +42,7 @@ dev = [
   # Tools
   "qgis-plugin-dev-tools>=0.13.2",
   "copier",
+  "pydantic>=2.12",
 ]
 lint = [
   # Linting and formatting (ensure precommit yaml has same versions)
