@@ -23,6 +23,7 @@ expr
 fid
 fids
 formatter
+fullmatch
 func
 funcargs
 gdal

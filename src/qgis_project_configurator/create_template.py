@@ -30,6 +30,7 @@ from qgis.core import (
     QgsProject,
 )
 
+from qgis_project_configurator.config_format import schema_url
 from qgis_project_configurator.qgis_utils import save_style
 
 
@@ -148,7 +149,7 @@ def create_configuration_template(
         "data_sources": {
             "<data-source-name>": {
                 "type": "postgis",
-                "service": None,
+                "service": "<service-name>",
                 "schema": "public",
                 "geom_column": "geom",
             }
@@ -192,12 +193,13 @@ def _write_to_yaml(
 
     CustomDumper.add_representer(dict, dynamic_dict_representer)
 
-    with output_file.open("w") as yaml_file:
-        yaml.dump(
-            config,
-            yaml_file,
-            Dumper=CustomDumper,
-            sort_keys=False,
-            default_flow_style=False,
-            width=float("inf"),
-        )
+    yaml_text = yaml.dump(
+        config,
+        Dumper=CustomDumper,
+        sort_keys=False,
+        default_flow_style=False,
+        width=float("inf"),
+    )
+    # Lets editors with the YAML language server use the schema
+    schema_comment = f"# yaml-language-server: $schema={schema_url()}"
+    output_file.write_text(f"{schema_comment}\n{yaml_text}")

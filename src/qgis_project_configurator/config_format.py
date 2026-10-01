@@ -26,6 +26,8 @@ The JSON Schema and the reference docs are generated from this module with
 Keep this module free of third party and qgis imports.
 """
 
+import re
+from importlib import metadata
 from typing import Any, Literal, NotRequired, Required, TypedDict
 
 _REPOSITORY_URL = "https://raw.githubusercontent.com/nlsfi/qgis-project-configurator"
@@ -33,6 +35,22 @@ _SCHEMA_PATH = "schema/config.schema.json"
 
 MAIN_SCHEMA_URL = f"{_REPOSITORY_URL}/main/{_SCHEMA_PATH}"
 """The schema on the main branch. The `$id` of the schema."""
+
+
+def schema_url() -> str:
+    """Return the schema URL for the installed version.
+
+    A release version gives the schema of its tag, so that a config made with
+    that version is checked against that version. Other versions get the main
+    branch.
+    """
+    try:
+        version = metadata.version("qgis_project_configurator")
+    except metadata.PackageNotFoundError:
+        return MAIN_SCHEMA_URL
+    if re.fullmatch(r"\d+\.\d+\.\d+", version):
+        return f"{_REPOSITORY_URL}/v{version}/{_SCHEMA_PATH}"
+    return MAIN_SCHEMA_URL
 
 
 class PostgisSourceConfig(TypedDict):

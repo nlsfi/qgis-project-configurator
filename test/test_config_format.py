@@ -20,8 +20,10 @@ from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
+from qgis.core import QgsProcessingFeedback, QgsProject, QgsVectorLayer
 
 from qgis_project_configurator.config_compiler import ConfigCompiler
+from qgis_project_configurator.create_template import create_configuration_template
 from qgis_project_configurator.models import (
     EmbeddedLayerGroup,
     LayerGroup,
@@ -64,6 +66,23 @@ def test_example_config_is_valid():
 
 def test_base_config_is_valid(base_config: dict):
     _validate(base_config)
+
+
+def test_template_is_valid(tmp_path: Path):
+    project = QgsProject()
+    layer = QgsVectorLayer("Point?crs=EPSG:3067", "points", "memory")
+    project.addMapLayer(layer, False)
+    project.layerTreeRoot().addGroup("group").addLayer(layer)
+    output_file = tmp_path / "config.yaml"
+
+    create_configuration_template(
+        output_file=output_file,
+        style_folder=None,
+        feedback=QgsProcessingFeedback(),
+        project=project,
+    )
+
+    _validate(load_config(output_file))
 
 
 @pytest.mark.parametrize(
