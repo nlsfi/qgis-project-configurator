@@ -1,7 +1,13 @@
 data_sources:
-  gpkg:
+  example-gpkg:
     type: gpkg
     path: ./data.gpkg
+  example-db:
+    type: postgis
+    service: db
+    schema: public
+    geom_column: geom
+
 
 style_variants: [minimal, detailed]
 
