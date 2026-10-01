@@ -35,11 +35,15 @@ from qgis_project_configurator.qgis_utils import save_style
 
 @dataclass
 class StyleFolderConfig:
+    """Style folder path, absolute and relative to the config file folder."""
+
     absolute: Path
     relative: Path
 
 
 class ConfigStyle(Enum):
+    """YAML style for layers in the config template."""
+
     DEFAULT = auto()
     COMPACT_LAYERS = auto()
 
