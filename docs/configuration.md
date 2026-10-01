@@ -36,7 +36,7 @@ data_sources:
 ```
 
 A layer sets its table with `table`. The layer then loads from the selected data
-source.
+source. A layer without a table is left out.
 
 A `table` in a data source replaces the `table` of every layer. So leave it out,
 or set it to null.

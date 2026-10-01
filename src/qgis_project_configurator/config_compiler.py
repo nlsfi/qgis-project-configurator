@@ -40,6 +40,12 @@ from qgis_project_configurator.models import (
 
 LOGGER = logging.getLogger(__name__)
 
+# Other data source types are read as postgis
+REQUIRED_SOURCE_KEYS = {
+    "gpkg": ("type", "path"),
+    "postgis": ("type", "service", "schema", "geom_column"),
+}
+
 
 def _merge_dicts(defaults: dict, override: dict) -> dict:
     """Merge two dicts, override wins."""
@@ -54,7 +60,25 @@ def _merge_dicts(defaults: dict, override: dict) -> dict:
     return merged
 
 
+def _check_source_keys(
+    source_dict: dict, data_source: str | Path, layer_name: str
+) -> None:
+    """Raise ValueError if a data source misses a key."""
+    source_type = "gpkg" if source_dict.get("type") == "gpkg" else "postgis"
+    missing = [
+        key for key in REQUIRED_SOURCE_KEYS[source_type] if key not in source_dict
+    ]
+    if missing:
+        msg = (
+            f"Data source {data_source!r} of layer {layer_name!r} "
+            f"has no {', '.join(missing)}"
+        )
+        raise ValueError(msg)
+
+
 class ConfigCompiler:
+    """Compile a raw config for one data source and product version."""
+
     def __init__(
         self,
         raw_config: dict,
@@ -70,6 +94,7 @@ class ConfigCompiler:
         self.project_dir = project_dir
 
     def compile(self) -> CompiledConfig:
+        """Return the compiled config."""
         return CompiledConfig(
             layer_tree=self._compile_layer_tree(self.raw_config.get("layer_tree", [])),
             project_properties=self._compile_project_properties(
@@ -137,9 +162,13 @@ class ConfigCompiler:
         if compiled_style_file == "hidden":
             LOGGER.info("Layer %s hidden, excluded", layer_name)
             return None
-        compiled_data_source = self._compile_data_source(table, data_source_overrides)
+        compiled_data_source = self._compile_data_source(
+            layer_name, table, data_source_overrides
+        )
         if not compiled_data_source:
-            LOGGER.warning("Data source not defined for layer %s, excluded", layer_name)
+            LOGGER.warning(
+                "Data source or table not defined for layer %s, excluded", layer_name
+            )
             return None
         compiled_scale = self._compile_scale(scale)
         compiled_map_themes = self._compile_map_themes(map_themes)
@@ -167,7 +196,7 @@ class ConfigCompiler:
         return self._resolve_relative_path(style_file)
 
     def _compile_data_source(
-        self, table: str | None, data_source_overrides: dict | None
+        self, layer_name: str, table: str | None, data_source_overrides: dict | None
     ) -> DataSource | None:
         def construct_source_dict() -> dict | None:
             # TODO: refactor source-dict creation
@@ -183,6 +212,7 @@ class ConfigCompiler:
             # multiple data sources configured for layer (or layer group defaults)
             elif data_source_overrides and self.data_source in data_source_overrides:
                 source_dict = data_source_overrides[self.data_source].copy()
+                _check_source_keys(source_dict, self.data_source, layer_name)
                 # use table key only if source specific config does not define it
                 if table and source_dict.get("table") is None:
                     source_dict["table"] = table
@@ -217,7 +247,7 @@ class ConfigCompiler:
             )
 
         source_dict = construct_source_dict()
-        if not source_dict:
+        if not source_dict or not source_dict.get("table"):
             return None
 
         return map_source_dict_to_class(source_dict)

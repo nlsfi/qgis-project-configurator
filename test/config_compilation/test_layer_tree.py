@@ -17,6 +17,8 @@
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 from pathlib import Path
 
+import pytest
+
 from qgis_project_configurator.config_compiler import ConfigCompiler
 from qgis_project_configurator.models import (
     EmbeddedLayerGroup,
@@ -178,6 +180,48 @@ def test_layer_gpkg_source_constructed_from_table(base_config: dict, tmp_path: P
         path=tmp_path / "data.gpkg",
         table="table",
     )
+
+
+def test_layer_without_table_excluded(base_config: dict, tmp_path: Path):
+    base_config["data_sources"] = {
+        "db": {
+            "type": "postgis",
+            "service": "db",
+            "schema": "public",
+            "geom_column": "geom",
+        },
+    }
+    base_config["layer_tree"] = [{"vector_layer": "layer"}]
+    compiled = ConfigCompiler(
+        raw_config=base_config,
+        config_dir=tmp_path,
+        data_source="db",
+        project_dir=tmp_path,
+    ).compile()
+
+    assert compiled.layer_tree == []
+
+
+def test_incomplete_data_source_fails(base_config: dict, tmp_path: Path):
+    base_config["layer_tree"] = [
+        {
+            "vector_layer": "layer",
+            "table": "table",
+            "data_source_overrides": {"other": {"schema": "public"}},
+        },
+    ]
+    compiler = ConfigCompiler(
+        raw_config=base_config,
+        config_dir=tmp_path,
+        data_source="other",
+        project_dir=tmp_path,
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="Data source 'other' of layer 'layer' has no type, service, geom_column",
+    ):
+        compiler.compile()
 
 
 def test_embedded_group_project_path_resolved(base_config: dict, tmp_path: Path):
