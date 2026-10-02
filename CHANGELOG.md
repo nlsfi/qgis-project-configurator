@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.3 - 2026-10-02
 
 - Add cli support for creating config templates
 - Add initial metadata support to config format
