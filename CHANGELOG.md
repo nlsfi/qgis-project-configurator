@@ -1,5 +1,7 @@
 # Changelog
 
+## Unreleased
+
 ## 1.2.0 - 2026-10-02
 
 - Rename product version to style variant in configuration files and in cli option. Cli option is now `--style-variant` instead of `--product-version`
