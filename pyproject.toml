@@ -17,7 +17,7 @@ qgis-project-configurator = "qgis_project_configurator.cli.main:main"
 qpc = "qgis_project_configurator.cli.main:main"
 
 [tool.uv.build-backend]
-module-name = ["qgis_project_configurator"]
+module-name = ["qgis_project_configurator", "qgis_project_configurator_plugin"]
 
 [tool.qgis_plugin_dev_tools]
 plugin_package_name = "qgis_project_configurator_plugin"
