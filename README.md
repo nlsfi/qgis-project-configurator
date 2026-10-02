@@ -12,14 +12,6 @@ configuration files.
 
 See [development readme](./DEVELOPMENT.md).
 
-Now you can use the cli:
+## Usage
 
-```bash
-qgis-project-configurator --help
-```
-
-Or use the shorthand:
-
-```bash
-qpc --help
-```
+See [usage example](./example).
