@@ -114,3 +114,25 @@ qpc get-metadata config.yaml --key nested_metadata
 ```
 
 ## Postgis setup
+
+Make sure docker or podman with a compose provider is installed.
+
+Start the database (this automatically loads `data.gpkg` into the database):
+
+```bash
+podman compose up -d
+```
+
+The `db` service referenced by the `example-db` datasource in the example
+configuration is defined in [`./pg_service.conf`](./pg_service.conf). Point the
+`PGSERVICEFILE` environment variable to this file, for example:
+
+```bash
+export PGSERVICEFILE=/path/to/pg_service.conf
+```
+
+Now you can use the `example-db` datasource, for example:
+
+```bash
+qpc create-project --config config.yaml --data-source example-db --style-variant detailed --project example-project.qgs --store-metadata
+```
