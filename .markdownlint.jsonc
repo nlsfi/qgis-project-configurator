@@ -7,5 +7,8 @@
     "heading_line_length": 80,
     // Include code blocks
     "code_blocks": false
+  },
+  "MD024": {
+    "siblings_only": true
   }
 }
