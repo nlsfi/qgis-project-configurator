@@ -7,7 +7,7 @@ name = "qgis-project-configurator"
 requires-python = ">=3.12"
 version = "0.1.3.post0"
 readme = "README.md"
-dependencies = ["PyYAML", "qgis_plugin_tools"]
+dependencies = ["PyYAML", "qgis_plugin_tools>=2.0.0"]
 
 [project.entry-points."qgis_plugin_dev_tools"]
 qgis_project_configurator_plugin = "qgis_project_configurator_plugin"
