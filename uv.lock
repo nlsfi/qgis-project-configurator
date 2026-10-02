@@ -1270,7 +1270,7 @@ wheels = [
 
 [[package]]
 name = "qgis-project-configurator"
-version = "0.1.3"
+version = "0.1.3.post0"
 source = { editable = "." }
 default-groups = ["dev", "lint"]
 dependencies = [
