@@ -3,6 +3,13 @@
 This directory contains an [example configuration](./config.yaml),
 [styles](./styles) and some data to try out qgis-project-configurator.
 
+## Table of Contents
+
+- [Requirements](#requirements)
+- [Plugin usage](#plugin-usage)
+- [Command line usage](#command-line-usage)
+- [Postgis setup](#postgis-setup)
+
 ## Requirements
 
 - QGIS
