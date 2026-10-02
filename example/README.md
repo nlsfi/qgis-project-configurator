@@ -85,6 +85,8 @@ An example command:
 qpc create-project --config config.yaml --data-source example-gpkg --style-variant detailed --project example-project.qgs --store-metadata
 ```
 
+To use the `example-db` datasource, see [postgis setup](#postgis-setup).
+
 ### Create template configuration
 
 For usage & available options see:
