@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Rename product version to style variant in configuration files and in cli option. Cli option is now `--style-variant` instead of `--product-version`
+- Rename the `hidden` style value to `exclude` for excluding layers from a project
+- Add usage examples and PostGIS instructions to docs
+- Fix plugin package missing from the build
+
 ## 0.1.3 - 2026-10-02
 
 - Add cli support for creating config templates
