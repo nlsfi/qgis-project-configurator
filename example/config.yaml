@@ -42,9 +42,10 @@ project_properties:
   WMSServiceCapabilities: true
   WMSServiceTitle: The title of the service
   WMSPrecision: 5
-  WMSExtent: ["43547.79", "6522236.87", "764796.72", "7795461.19"]
+  WMSExtent: [43547.79, 6522236.87, 764796.72, 7795461.19]
   WMSMaxAtlasFeatures: 100
   WMSTileBuffer: 100
+  WMSCrsList: [3067, 4326, 5048]
   crs: 3067
 
 metadata:
