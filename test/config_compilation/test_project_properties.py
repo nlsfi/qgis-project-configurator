@@ -63,3 +63,23 @@ def test_nested_project_properties_mapped_to_entries(base_config: dict, tmp_path
         ProjectEntry(scope="property_1", key="key_2", value=["value", 2]),
         ProjectEntry(scope="property_2", key="/", value=2),
     ]
+
+
+def test_properties_normalized(base_config: dict, tmp_path: Path):
+    base_config["project_properties"] = {
+        "WMSCrsList": [3067, 4236, "EPSG:5048"],
+        "WMSExtent": [1, 2, "3", 4],
+    }
+
+    compiled = ConfigCompiler(
+        raw_config=base_config,
+        config_dir=tmp_path,
+        data_source="db",
+        project_dir=tmp_path,
+    ).compile()
+    assert compiled.project_properties == [
+        ProjectEntry(
+            scope="WMSCrsList", key="/", value=["EPSG:3067", "EPSG:4236", "EPSG:5048"]
+        ),
+        ProjectEntry(scope="WMSExtent", key="/", value=["1", "2", "3", "4"]),
+    ]
