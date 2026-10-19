@@ -53,14 +53,15 @@ class ProjectManager:
         for entry in self.project_properties:
             # Crs is a special case. Refactor if these become common.
             if entry.scope == "crs":
-                LOGGER.info("Setting project crs to: epsg %s", entry.value)
-                self.project.setCrs(
-                    QgsCoordinateReferenceSystem.fromEpsgId(entry.value)
-                )
+                self._handle_project_crs(entry.value)
             else:
                 self._write_project_entry(entry)
         if store_metadata:
             self._write_project_creation_metadata()
+
+    def _handle_project_crs(self, crs: int) -> None:
+        LOGGER.info("Setting project crs to: epsg %s", crs)
+        self.project.setCrs(QgsCoordinateReferenceSystem.fromEpsgId(crs))
 
     def _write_project_creation_metadata(self) -> None:
         LOGGER.info("writing project creation metadata into project")
