@@ -20,6 +20,7 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
+from qgis.core import QgsCoordinateReferenceSystem
 
 from qgis_project_configurator.models import ProjectEntry
 from qgis_project_configurator.project_manager import ProjectManager
@@ -64,4 +65,12 @@ def test_write_project_properties_store_metadata(project_manager: ProjectManager
         scope="qgis_project_configurator",
         key="data_source",
         value="gpkg",
+    )
+
+
+def test_set_project_crs(project_manager: ProjectManager):
+    project_manager.project_properties = [ProjectEntry("crs", "/", 3067)]
+    project_manager.write_project_properties()
+    project_manager.project.setCrs.assert_called_once_with(
+        QgsCoordinateReferenceSystem.fromEpsgId(3067)
     )
