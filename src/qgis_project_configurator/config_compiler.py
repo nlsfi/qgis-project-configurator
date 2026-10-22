@@ -19,7 +19,7 @@
 import logging
 from copy import deepcopy
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 from qgis_project_configurator.models import (
     CompiledConfig,
@@ -259,10 +259,20 @@ class ConfigCompiler:
                         # Construct the path-like key from the rest, or use
                         # scope root ("/")
                         key="/".join(current_entry_path[1:]) or "/",
-                        value=value,
+                        value=self._normalize_property_value(key, value),
                     )
                 )
         return compiled_properties
+
+    def _normalize_property_value(self, key: str, value: Any) -> Any:  # noqa: ANN401
+        """Apply QGIS-specific formatting to property values."""
+        match key:
+            case "WMSCrsList":
+                return [f"EPSG:{crs}" if isinstance(crs, int) else crs for crs in value]
+            case "WMSExtent":
+                return [str(coordinate) for coordinate in value]
+            case _:
+                return value
 
     def _compile_layouts(self, raw_layouts: list[dict]) -> PrintLayouts:
         compiled_layouts: PrintLayouts = []
