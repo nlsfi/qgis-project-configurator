@@ -47,7 +47,8 @@ jobs:
 
       - name: Smoke test the plugin build
         run: |
-          PYTHONPATH=build_scan python3 -c \
+          # QGIS adds its bundled plugins (processing) to sys.path at startup
+          PYTHONPATH=build_scan:/usr/share/qgis/python/plugins python3 -c \
             "from qgis_project_configurator_plugin.plugin import Plugin"
 
       - name: Publish QGIS Plugin
