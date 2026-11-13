@@ -29,11 +29,11 @@ from qgis.core import (
     QgsProject,
 )
 from qgis.PyQt.QtWidgets import QMainWindow, QMessageBox, QWidget
-from qgis.utils import iface
 
 from qgis_project_configurator.create_project import (
     create_project as lib_create_project,
 )
+from qgis_project_configurator.qgis_utils import iface
 from qgis_project_configurator.yaml_loader import load_config
 from qgis_project_configurator_plugin.tools.parameters import CreateProjectParams
 from qgis_project_configurator_plugin.ui.create_project_dialog import (
@@ -60,7 +60,7 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
 
     @typing.override
     def initAlgorithm(
-        self, _configuration: dict[str | None, typing.Any] | None = None
+        self, configuration: dict[str | None, typing.Any] | None = None
     ) -> None:
         parameters = [
             QgsProcessingParameterFile(self.CONFIG_PATH, "Configuration file path"),
@@ -91,8 +91,14 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
             data_source=self.parameterAsString(parameters, self.DATA_SOURCE, context),
         )
 
-    def _check_for_empty_project_or_create_new(self) -> bool | QgsProject:
-        if len(QgsProject.instance().mapLayers()) > 0:
+    def _check_for_empty_project_or_create_new(
+        self,
+    ) -> typing.Literal[False] | QgsProject:
+        project = QgsProject.instance()
+        if project is None:
+            msg = "Cannot access QGIS project"
+            raise RuntimeError(msg)
+        if len(project.mapLayers()) > 0:
             msg_box = QMessageBox.question(
                 iface.mainWindow(),
                 "Project not empty",
@@ -106,7 +112,7 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
             success = iface.newProject(promptToSaveFlag=True)
             if not success:
                 pass  # TODO: handle fail?
-        return QgsProject.instance()
+        return project
 
     @typing.override
     def prepareAlgorithm(
@@ -128,6 +134,9 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
             simple way to control the layer tree structure and to which group
             the layers are added.
         """
+        if feedback is None:
+            msg = "Cannot access feedback"
+            raise RuntimeError(msg)
         project = self._check_for_empty_project_or_create_new()
         if project is False:
             if feedback is not None:
@@ -137,7 +146,11 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
         params = self._get_params(parameters, context)
         config = load_config(params.config_path)
 
-        iface.mapCanvas().freeze(True)  # noqa: FBT003
+        map_canvas = iface.mapCanvas()
+        if map_canvas is None:
+            msg = "Cannot access map canvas"
+            raise RuntimeError(msg)
+        map_canvas.freeze(True)  # noqa: FBT003
         try:
             lib_create_project(
                 project=project,
@@ -150,15 +163,15 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
                 feedback=feedback,
             )
         finally:
-            iface.mapCanvas().freeze(False)  # noqa: FBT003
+            map_canvas.freeze(False)  # noqa: FBT003
         return True
 
     @typing.override
     def processAlgorithm(
         self,
-        _parameters: dict[str | None, typing.Any],
-        _context: "QgsProcessingContext",
-        _feedback: "QgsProcessingFeedback | None",
+        parameters: dict[str | None, typing.Any],
+        context: "QgsProcessingContext",
+        feedback: "QgsProcessingFeedback | None",
     ) -> dict:
         """Run processing method in a background thread.
 

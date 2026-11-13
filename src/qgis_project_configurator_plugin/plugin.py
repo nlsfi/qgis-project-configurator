@@ -17,29 +17,22 @@
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
-import typing
 
 import qgis_plugin_tools
 from qgis.core import QgsApplication
-from qgis.gui import QgisInterface
 from qgis.processing import execAlgorithmDialog
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction
-from qgis.utils import iface as utils_iface
+from qgis.PyQt.QtWidgets import QAction, QMainWindow
 from qgis_plugin_tools.tools import custom_logging
 from qgis_plugin_tools.tools.decorations import log_if_fails
 
 import qgis_project_configurator_plugin
+from qgis_project_configurator.qgis_utils import iface
 from qgis_project_configurator_plugin import env
 from qgis_project_configurator_plugin.processing import ProjectManagerProcessingProvider
 from qgis_project_configurator_plugin.tools.export_styles import export_styles
 
-if typing.TYPE_CHECKING:
-    from qgis.gui import QgisInterface
-
 LOGGER = logging.getLogger(__name__)
-
-iface = typing.cast("QgisInterface", utils_iface)
 
 
 class Plugin:
@@ -60,6 +53,9 @@ class Plugin:
         self.initProcessing()
 
         toolbar = iface.addToolBar("QGIS project manager toolbar")
+        if toolbar is None:
+            msg = "Cannot create plugin toolbar"
+            raise RuntimeError(msg)
         toolbar.setObjectName("qgis-project-manager-toolbar")
 
         self.create_project_action = QAction(
@@ -106,21 +102,34 @@ class Plugin:
         LOGGER.info("Plugin initialized")
 
     def initProcessing(self) -> None:
-        self.processing_provider = ProjectManagerProcessingProvider()  # type: ignore [assignment]
-        success = QgsApplication.processingRegistry().addProvider(
-            self.processing_provider
-        )
+        self.processing_provider = ProjectManagerProcessingProvider()  # type: ignore[assignment]
+        processing_registry = QgsApplication.processingRegistry()
+        if processing_registry is None:
+            msg = "Cannot access processing registry"
+            raise RuntimeError(msg)
+        success = processing_registry.addProvider(self.processing_provider)
         if not success:
-            pass  # TODO: handle fail?
+            msg = "Cannot add plugin processing provider"
+            raise RuntimeError(msg)
 
     def unload(self) -> None:
         """Unload plugin."""
         if self.toolbar:
-            iface.mainWindow().removeToolBar(self.toolbar)
+            main_window = iface.mainWindow()
+            if not isinstance(main_window, QMainWindow):
+                msg = "Cannot access QGIS main window"
+                raise RuntimeError(msg)
+            main_window.removeToolBar(self.toolbar)
             self.toolbar = None
 
-        QgsApplication.processingRegistry().removeProvider(self.processing_provider)  # noqa: QGS202
-
+        processing_registry = QgsApplication.processingRegistry()
+        if processing_registry is None:
+            msg = "Cannot access processing registry"
+            raise RuntimeError(msg)
+        success = processing_registry.removeProvider(self.processing_provider)  # noqa: QGS202
+        if not success:
+            msg = "Cannot remove plugin processing provider"
+            raise RuntimeError(msg)
         self._teardown_loggers()
         self._teardown_loggers = lambda: None
 

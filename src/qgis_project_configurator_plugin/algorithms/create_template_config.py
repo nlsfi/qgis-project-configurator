@@ -53,9 +53,7 @@ class CreateTemplateMapConfig(QgsProcessingAlgorithm):
         return "Create a template map configuration"
 
     @typing.override
-    def initAlgorithm(
-        self, _configuration: dict[str | None, Any] | None = None
-    ) -> None:
+    def initAlgorithm(self, configuration: dict[str | None, Any] | None = None) -> None:
         parameters = [
             QgsProcessingParameterFileDestination(
                 self.OUTPUT,
@@ -101,6 +99,9 @@ class CreateTemplateMapConfig(QgsProcessingAlgorithm):
 
         This runs in the main tread.
         """
+        if feedback is None:
+            msg = "Cannot access feedback"
+            raise RuntimeError(msg)
         self.output_path = Path(
             self.parameterAsFileOutput(parameters, self.OUTPUT, context)
         )
@@ -126,9 +127,9 @@ class CreateTemplateMapConfig(QgsProcessingAlgorithm):
     @typing.override
     def processAlgorithm(
         self,
-        _parameters: dict[str | None, typing.Any],
-        _context: "QgsProcessingContext",
-        _feedback: "QgsProcessingFeedback | None",
+        parameters: dict[str | None, typing.Any],
+        context: "QgsProcessingContext",
+        feedback: "QgsProcessingFeedback | None",
     ) -> dict[str, str]:
         """Run processing method in a background thread."""
         return {self.OUTPUT: str(self.output_path)}
@@ -136,8 +137,8 @@ class CreateTemplateMapConfig(QgsProcessingAlgorithm):
     @typing.override
     def postProcessAlgorithm(
         self,
-        _context: "QgsProcessingContext",
-        _feedback: "QgsProcessingFeedback | None",
+        context: "QgsProcessingContext",
+        feedback: "QgsProcessingFeedback | None",
     ) -> dict:
         """Run post processing stage of the algorithm."""
         return {}

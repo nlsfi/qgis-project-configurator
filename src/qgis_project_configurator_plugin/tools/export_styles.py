@@ -17,15 +17,23 @@
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
 from qgis.core import QgsProject
-from qgis.utils import iface
 
 from qgis_project_configurator.export_styles import export_layer_styles
+from qgis_project_configurator.qgis_utils import iface
 from qgis_project_configurator_plugin.ui.export_styles_dialog import ExportStylesDialog
 
 
 def export_styles() -> None:  # noqa: D103
+    main_window = iface.mainWindow()
+    if main_window is None:
+        msg = "Cannot access main window"
+        raise RuntimeError(msg)
     export_styles_dialog = ExportStylesDialog(iface.mainWindow())
 
     if export_styles_dialog.exec():
+        project = QgsProject.instance()
+        if project is None:
+            msg = "Cannot access QGIS project"
+            raise RuntimeError(msg)
         params = export_styles_dialog.get_params()
-        export_layer_styles(params.selected_layers, project=QgsProject.instance())
+        export_layer_styles(params.selected_layers, project=project)

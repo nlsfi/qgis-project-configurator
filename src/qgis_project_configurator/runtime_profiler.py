@@ -23,23 +23,26 @@ from typing import ParamSpec, TypeVar
 from qgis.core import QgsApplication
 
 
-class ProjectManagerProfiler:
+class QgisProjectConfiguratorProfiler:  # noqa: D101
     PROFILER_GROUP = "QGIS project configurator"
 
     def __init__(self) -> None:
         self._profiler = QgsApplication.profiler()
 
-    def start(self, name: str) -> None:
-        self._profiler.start(group=self.PROFILER_GROUP, name=name)
+    def start(self, name: str) -> None:  # noqa: D102
+        if self._profiler is not None:
+            self._profiler.start(group=self.PROFILER_GROUP, name=name)
 
-    def end(self) -> None:
-        self._profiler.end(group=self.PROFILER_GROUP)
+    def end(self) -> None:  # noqa: D102
+        if self._profiler is not None:
+            self._profiler.end(group=self.PROFILER_GROUP)
 
-    def clear(self) -> None:
-        self._profiler.clear(group=self.PROFILER_GROUP)
+    def clear(self) -> None:  # noqa: D102
+        if self._profiler is not None:
+            self._profiler.clear(group=self.PROFILER_GROUP)
 
 
-profiler = ProjectManagerProfiler()
+profiler = QgisProjectConfiguratorProfiler()
 
 P = ParamSpec("P")
 R = TypeVar("R")

@@ -16,9 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
+import typing
 from pathlib import Path
 
 from qgis.core import QgsMapLayer, QgsProject
+from qgis.utils import iface as utils_iface
+
+if typing.TYPE_CHECKING:
+    from qgis.gui import QgisInterface
+
+iface = typing.cast("QgisInterface", utils_iface)
 
 
 def read_project_entry(
@@ -44,8 +51,11 @@ def read_project_entry(
 
 def save_style(layer: QgsMapLayer, style_path: Path) -> bool:
     """Save layer style to file."""
+    categories = (
+        QgsMapLayer.StyleCategory.Symbology | QgsMapLayer.StyleCategory.Labeling
+    )
     _msg, style_saved = layer.saveNamedStyle(
         str(style_path),
-        QgsMapLayer.StyleCategory.Symbology | QgsMapLayer.StyleCategory.Labeling,
+        typing.cast("QgsMapLayer.StyleCategory", categories),
     )
     return style_saved

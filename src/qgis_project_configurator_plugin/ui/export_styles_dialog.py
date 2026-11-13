@@ -22,10 +22,10 @@ from importlib import resources
 from qgis.core import QgsProject
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QListWidget, QWidget
-from qgis.utils import iface
 from qgis_plugin_tools.tools.resources import plugin_name
 
 from qgis_project_configurator.export_styles import export_layer_styles
+from qgis_project_configurator.qgis_utils import iface
 from qgis_project_configurator_plugin.tools.parameters import ExportStylesParams
 
 ui_path = resources.files(__package__) / "export_styles_dialog.ui"
@@ -42,11 +42,19 @@ class ExportStylesDialog(QDialog, ExportStylesDialogBase):  # type: ignore [vali
         super().__init__(parent)
         self.setupUi(self)
 
-        self.selected_layers = iface.layerTreeView().selectedLayers()
+        layer_tree_view = iface.layerTreeView()
+        if layer_tree_view is None:
+            msg = "Cannot access layer tree"
+            raise RuntimeError(msg)
+        self.selected_layers = layer_tree_view.selectedLayers()
         self.populate_selected_layers_list()
 
     def handle_ok_click(self) -> None:
-        export_layer_styles(self.selected_layers, project=QgsProject.instance())
+        project = QgsProject.instance()
+        if project is None:
+            msg = "Cannot access QGIS project"
+            raise RuntimeError(msg)
+        export_layer_styles(self.selected_layers, project=project)
 
     def populate_selected_layers_list(self) -> None:
         for layer in self.selected_layers:

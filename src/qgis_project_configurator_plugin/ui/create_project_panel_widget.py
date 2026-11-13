@@ -36,7 +36,7 @@ LOGGER = logging.getLogger(__name__)
 CUSTOM_GPKG_LABEL = "Custom Geopackage"
 
 
-class CreateProjectPanelWidget(QgsPanelWidget, CreateProjectPanelWidgetBase):  # type: ignore [valid-type, misc]
+class CreateProjectPanelWidget(QgsPanelWidget, CreateProjectPanelWidgetBase):  # type: ignore[valid-type, misc]
     """Widget for creating project."""
 
     config_file_widget: QgsFileWidget
@@ -103,7 +103,7 @@ class CreateProjectPanelWidget(QgsPanelWidget, CreateProjectPanelWidgetBase):  #
             self.style_variant_combo_box.addItem(version)
 
     @typing.override
-    def setParameters(self, parameters: dict[str | None, typing.Any]) -> None:
+    def setParameters(self, parameters: dict[str | None, typing.Any]) -> None:  # type: ignore[reportGeneralTypeIssues]
         self.config_file_widget.setFilePath(parameters.get("CONFIG_PATH"))
         self.style_variant_combo_box.setCurrentText(parameters.get("STYLE_VARIANT"))
 
@@ -115,9 +115,9 @@ class CreateProjectPanelWidget(QgsPanelWidget, CreateProjectPanelWidgetBase):  #
             self.data_source_combo_box.setCurrentText(CUSTOM_GPKG_LABEL)
 
     @typing.override
-    def createProcessingParameters(
+    def createProcessingParameters(  # type: ignore[reportGeneralTypeIssues]
         self,
-        _flags: "QgsProcessingParametersGenerator.Flag" = QgsProcessingParametersGenerator.Flags(),  # noqa: B008, E501
+        _flags: "QgsProcessingParametersGenerator.Flag" = QgsProcessingParametersGenerator.Flags(),  # ty: ignore[unresolved-attribute] # type: ignore[reportAttributeAccessIssue] # noqa: B008, E501
     ) -> dict | None:
         try:
             return {

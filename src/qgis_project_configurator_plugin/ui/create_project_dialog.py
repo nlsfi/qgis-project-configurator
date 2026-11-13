@@ -19,12 +19,21 @@
 import logging
 
 # qgis 3 / 4 import workaround
+#
+# Note that QGIS' processing plugin is injected by qgis startup: it's
+# non-importable to the type checker. The blanket "type: ignore" is used to
+# accommodate both qgis 3 and 4 development without mismatching more specific
+# type ignores
 try:
-    # original qgis 3 import
-    from processing.gui.AlgorithmDialog import AlgorithmDialog
+    # Original qgis 3 import.
+    from processing.gui.AlgorithmDialog import (  # type: ignore # noqa: PGH003 # ty: ignore[unused-ignore-comment]
+        AlgorithmDialog,
+    )
 except ImportError:
     # aliased import for qgis 4 (functionally the same class)
-    from processing.gui.algorithm_widget import AlgorithmWidget as AlgorithmDialog
+    from processing.gui.algorithm_widget import (  # type: ignore # noqa: PGH003 # ty: ignore[unused-ignore-comment]
+        AlgorithmWidget as AlgorithmDialog,
+    )
 
 from typing import TYPE_CHECKING
 

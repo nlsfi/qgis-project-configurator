@@ -26,27 +26,27 @@ LOGGER = logging.getLogger(__name__)
 
 
 class LoggingProcessingFeedback(QgsProcessingFeedback):
-    def setProgressText(self, text: str) -> None:  # noqa: N802
+    def setProgressText(self, text: str | None) -> None:  # noqa: N802
         LOGGER.info(text)
         super().setProgressText(text)
 
-    def pushInfo(self, info: str) -> None:  # noqa: N802
+    def pushInfo(self, info: str | None) -> None:  # noqa: N802
         LOGGER.info(info)
         super().pushInfo(info)
 
-    def pushCommandInfo(self, info: str) -> None:  # noqa: N802
+    def pushCommandInfo(self, info: str | None) -> None:  # noqa: N802
         LOGGER.debug(info)
         super().pushCommandInfo(info)
 
-    def pushDebugInfo(self, info: str) -> None:  # noqa: N802
+    def pushDebugInfo(self, info: str | None) -> None:  # noqa: N802
         LOGGER.debug(info)
         super().pushDebugInfo(info)
 
-    def pushConsoleInfo(self, info: str) -> None:  # noqa: N802
+    def pushConsoleInfo(self, info: str | None) -> None:  # noqa: N802
         LOGGER.debug(info)
         super().pushConsoleInfo(info)
 
-    def reportError(self, error: str, fatalError: bool = False) -> None:  # noqa: FBT001, FBT002, N802, N803
+    def reportError(self, error: str | None, fatalError: bool = False) -> None:  # noqa: FBT001, FBT002, N802, N803
         if fatalError:
             LOGGER.critical(error)
         else:
