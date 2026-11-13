@@ -25,7 +25,7 @@ from qgis_project_configurator_plugin import classFactory
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from pytest_qgis import QgisInterface
+    from qgis.gui import QgisInterface
 
     from qgis_project_configurator_plugin.plugin import Plugin
 
