@@ -165,7 +165,7 @@ class ConfigCompiler:
                 style_file = style
         elif style:
             style_file = style
-        if not style_file or style_file == "exclude":
+        if style_file is None or style_file == "exclude":
             return style_file
         return self._resolve_relative_path(style_file)
 

@@ -17,6 +17,7 @@
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
 from pathlib import Path
+from typing import cast
 
 from qgis.core import QgsMapLayer, QgsProject
 
@@ -44,8 +45,11 @@ def read_project_entry(
 
 def save_style(layer: QgsMapLayer, style_path: Path) -> bool:
     """Save layer style to file."""
+    categories = (
+        QgsMapLayer.StyleCategory.Symbology | QgsMapLayer.StyleCategory.Labeling
+    )
     _msg, style_saved = layer.saveNamedStyle(
         str(style_path),
-        QgsMapLayer.StyleCategory.Symbology | QgsMapLayer.StyleCategory.Labeling,
+        cast("QgsMapLayer.StyleCategory", categories),
     )
     return style_saved

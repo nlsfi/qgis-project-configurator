@@ -75,8 +75,13 @@ def _layer_node_to_config(
     node: QgsLayerTreeLayer,
     style_folder_config: StyleFolderConfig | None,
     feedback: QgsProcessingFeedback,
-) -> dict[str, str]:
+) -> dict[str, str] | None:
     layer = node.layer()
+    if layer is None:
+        feedback.pushWarning(
+            f"Layer for node '{node.name()}' could not be resolved. Skipping."
+        )
+        return None
     feedback.pushInfo(layer.name())
 
     formatted_style_path = ""
@@ -98,7 +103,13 @@ def _layer_node_to_config(
         else:
             feedback.pushWarning(f"Failed to save style for layer: {layer.name()}")
 
-    uri = layer.dataProvider().uri()
+    data_provider = layer.dataProvider()
+    if data_provider is None:
+        feedback.pushWarning(
+            f"Data provider for layer '{node.name()}' could not be resolved. Skipping."
+        )
+        return None
+    uri = data_provider.uri()
     return {
         "vector_layer": layer.name(),
         "style": formatted_style_path,
@@ -134,7 +145,15 @@ def create_configuration_template(
 ) -> dict:
     """Create a config template."""
     project = project or QgsProject.instance()
+    if project is None:
+        msg = (
+            "Cannot create configuration template: No QGIS project instance available."
+        )
+        raise RuntimeError(msg)
     layer_tree = project.layerTreeRoot()
+    if layer_tree is None:
+        msg = "Cannot create configuration template: Cannot access layer tree."
+        raise RuntimeError(msg)
 
     if style_folder:
         style_folder.mkdir(parents=True, exist_ok=True)

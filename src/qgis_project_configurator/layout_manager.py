@@ -23,6 +23,7 @@ from qgis.core import (
     QgsProcessingFeedback,
     QgsProject,
     QgsReadWriteContext,
+    QgsVectorLayer,
 )
 from qgis.PyQt.QtXml import QDomDocument  # noqa: SC200
 
@@ -33,6 +34,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 class LayoutManager:
+    """Manage layouts."""
+
     def __init__(self, project: QgsProject, layouts: PrintLayouts) -> None:
         self.project = project
         self.layouts = layouts
@@ -40,6 +43,7 @@ class LayoutManager:
 
     @profile_function("Load layouts")
     def load_layouts(self, feedback: QgsProcessingFeedback) -> None:
+        """Load layouts."""
         if not self.qgs_layout_manager:
             LOGGER.error("Could not access layout manager")
             return
@@ -71,5 +75,8 @@ class LayoutManager:
                 layer = self.project.mapLayersByName(
                     layout_config.atlas_coverage_layer_name
                 )[0]
+                if not isinstance(layer, QgsVectorLayer):
+                    msg = "Atlas creation failed: coverage layer is not a vector layer"
+                    raise RuntimeError(msg)
                 atlas.setCoverageLayer(layer)
             self.qgs_layout_manager.addLayout(qgs_print_layout)
