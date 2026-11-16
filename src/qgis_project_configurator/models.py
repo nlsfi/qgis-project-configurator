@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -54,10 +55,10 @@ class Scale:
     max: int | float | None
 
 
-MapThemeNames = list[str]
+MapThemeNames = Sequence[str]
 
 
-MapThemes = dict[str, list[QgsMapLayer]]
+MapThemes = Mapping[str, Sequence[QgsMapLayer]]
 
 
 @dataclass(frozen=True)
@@ -76,7 +77,7 @@ class LayerGroup:
     """Represent a group containing child layer tree nodes."""
 
     name: str
-    children: list["LayerTreeNode"]
+    children: Sequence["LayerTreeNode"]
 
 
 @dataclass(frozen=True)
@@ -90,7 +91,7 @@ class EmbeddedLayerGroup:
 LayerTreeNode = VectorLayer | LayerGroup | EmbeddedLayerGroup
 
 
-LayerTree = list[LayerTreeNode]
+LayerTree = Sequence[LayerTreeNode]
 
 
 @dataclass(frozen=True)
@@ -102,7 +103,7 @@ class ProjectEntry:
     value: Any
 
 
-ProjectProperties = list[ProjectEntry]
+ProjectProperties = Sequence[ProjectEntry]
 
 
 @dataclass(frozen=True)
@@ -113,10 +114,10 @@ class PrintLayout:
     atlas_coverage_layer_name: str | None
 
 
-PrintLayouts = list[PrintLayout]
+PrintLayouts = Sequence[PrintLayout]
 
 
-Metadata = dict[str, Any]
+Metadata = Mapping[str, Any]
 
 
 @dataclass(frozen=True)

@@ -37,7 +37,6 @@ from qgis_project_configurator.models import (
     LayerGroup,
     LayerTreeNode,
     MapThemeNames,
-    MapThemes,
     PostgisSource,
     Scale,
     VectorLayer,
@@ -60,7 +59,7 @@ class LayerManager:
     ) -> None:
         self.project = project
         self.config = config
-        self.layers_by_map_themes: MapThemes = {}
+        self.layers_by_map_themes = {}
         self.map_theme_manager = map_theme_manager
 
         self._map_layer_count = self.config.count_map_layers()

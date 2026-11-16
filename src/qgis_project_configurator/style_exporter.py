@@ -17,6 +17,7 @@
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
+from collections.abc import Sequence
 from pathlib import Path
 
 from qgis.core import (
@@ -88,7 +89,7 @@ class StyleExporter:
                 path.append(group_name)
         return "/".join(reversed(path))
 
-    def export_layer_styles(self, layers: list[QgsMapLayer]) -> None:
+    def export_layer_styles(self, layers: Sequence[QgsMapLayer]) -> None:
         """Export styles for the given layers to their configured style files."""
         style_map = self._map_layer_names_to_style_files()
         for layer in layers:
