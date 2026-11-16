@@ -38,6 +38,8 @@ from qgis_project_configurator.create_template import (
 
 
 class CreateTemplateMapConfig(QgsProcessingAlgorithm):
+    """Algorithm wrapper for create_template."""
+
     OUTPUT = "OUTPUT"
     STYLE_FOLDER = "STYLE_FOLDER"
     USE_COMPACT_CONFIG = "USE_COMPACT_CONFIG"
@@ -46,6 +48,7 @@ class CreateTemplateMapConfig(QgsProcessingAlgorithm):
         super().__init__()
 
     def name(self) -> str:
+        """Return algorithm name."""
         return "create-template-map-configuration"
 
     @typing.override

@@ -49,12 +49,15 @@ LOGGER = logging.getLogger(__name__)
 
 
 class CreateProjectDialog(AlgorithmDialog):
+    """Algorithm dialog for creating a project."""
+
     def __init__(
         self, algorithm: "QgsProcessingAlgorithm", parent: "QWidget | None" = None
     ) -> None:
         super().__init__(algorithm, parent=parent)
 
-    def getParametersPanel(
+    def getParametersPanel(  # noqa: N802
         self, _algorithm: "QgsProcessingAlgorithm", parent: "QWidget | None"
     ) -> CreateProjectPanelWidget:
+        """Return the custom parameters panel widget."""
         return CreateProjectPanelWidget(parent)

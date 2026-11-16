@@ -26,27 +26,35 @@ LOGGER = logging.getLogger(__name__)
 
 
 class LoggingProcessingFeedback(QgsProcessingFeedback):
+    """Processing feedback implementation that forwards messages to Python logging."""
+
     def setProgressText(self, text: str | None) -> None:  # noqa: N802
+        """Log progress text at INFO level and forward to parent feedback handler."""
         LOGGER.info(text)
         super().setProgressText(text)
 
     def pushInfo(self, info: str | None) -> None:  # noqa: N802
+        """Log general information at INFO level."""
         LOGGER.info(info)
         super().pushInfo(info)
 
     def pushCommandInfo(self, info: str | None) -> None:  # noqa: N802
+        """Log command information at DEBUG level."""
         LOGGER.debug(info)
         super().pushCommandInfo(info)
 
     def pushDebugInfo(self, info: str | None) -> None:  # noqa: N802
+        """Log debug information at DEBUG level."""
         LOGGER.debug(info)
         super().pushDebugInfo(info)
 
     def pushConsoleInfo(self, info: str | None) -> None:  # noqa: N802
+        """Log console output at DEBUG level."""
         LOGGER.debug(info)
         super().pushConsoleInfo(info)
 
     def reportError(self, error: str | None, fatalError: bool = False) -> None:  # noqa: FBT001, FBT002, N802, N803
+        """Log error messages at CRITICAL or ERROR level."""
         if fatalError:
             LOGGER.critical(error)
         else:
@@ -55,6 +63,8 @@ class LoggingProcessingFeedback(QgsProcessingFeedback):
 
 
 def run_qgis(func: Callable):  # noqa: ANN201
+    """Run a function with a headless QGIS application."""
+
     @wraps(func)
     def wrapper(*args, **kwargs):  # noqa: ANN002, ANN003, ANN202
         LOGGER.info("creating qgis")

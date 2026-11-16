@@ -36,11 +36,14 @@ LOGGER = logging.getLogger(__name__)
 
 
 class StyleExporter:
+    """Export styles from QGIS project layers to configured style files."""
+
     def __init__(
         self,
         project: QgsProject,
         config: CompiledConfig,
     ) -> None:
+        """Initialize the exporter with a project and compiled configuration."""
         self.project = project
         self.config = config
 
@@ -86,6 +89,7 @@ class StyleExporter:
         return "/".join(reversed(path))
 
     def export_layer_styles(self, layers: list[QgsMapLayer]) -> None:
+        """Export styles for the given layers to their configured style files."""
         style_map = self._map_layer_names_to_style_files()
         for layer in layers:
             layer_path = self._layer_path_in_layer_tree(layer)

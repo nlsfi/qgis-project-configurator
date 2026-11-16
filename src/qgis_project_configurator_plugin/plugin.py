@@ -36,6 +36,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Plugin:
+    """Main plugin class."""
+
     def __init__(self) -> None:
         self._teardown_loggers = lambda: None
         self.processing_provider = None
@@ -101,7 +103,8 @@ class Plugin:
 
         LOGGER.info("Plugin initialized")
 
-    def initProcessing(self) -> None:
+    def initProcessing(self) -> None:  # noqa: N802
+        """Init processing."""
         self.processing_provider = ProjectManagerProcessingProvider()  # type: ignore[assignment]
         processing_registry = QgsApplication.processingRegistry()
         if processing_registry is None:

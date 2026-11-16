@@ -29,6 +29,8 @@ from qgis_project_configurator.create_template import (
 
 
 class CreateTemplateArgs(Protocol):
+    """Arguments for the create-template subcommand."""
+
     project: Path
     config: Path
     style_directory: Path | None

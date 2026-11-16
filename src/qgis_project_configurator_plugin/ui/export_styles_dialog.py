@@ -19,12 +19,10 @@
 import logging
 from importlib import resources
 
-from qgis.core import QgsProject
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QListWidget, QWidget
 from qgis_plugin_tools.tools.resources import plugin_name
 
-from qgis_project_configurator.export_styles import export_layer_styles
 from qgis_project_configurator.qgis_utils import iface
 from qgis_project_configurator_plugin.tools.parameters import ExportStylesParams
 
@@ -35,6 +33,8 @@ LOGGER = logging.getLogger(plugin_name())
 
 
 class ExportStylesDialog(QDialog, ExportStylesDialogBase):  # type: ignore [valid-type, misc]
+    """Display selected layers and configure style export parameters."""
+
     button_box: QDialogButtonBox
     selected_layers_list_widget: QListWidget
 
@@ -47,18 +47,12 @@ class ExportStylesDialog(QDialog, ExportStylesDialogBase):  # type: ignore [vali
             msg = "Cannot access layer tree"
             raise RuntimeError(msg)
         self.selected_layers = layer_tree_view.selectedLayers()
-        self.populate_selected_layers_list()
+        self._populate_selected_layers_list()
 
-    def handle_ok_click(self) -> None:
-        project = QgsProject.instance()
-        if project is None:
-            msg = "Cannot access QGIS project"
-            raise RuntimeError(msg)
-        export_layer_styles(self.selected_layers, project=project)
-
-    def populate_selected_layers_list(self) -> None:
+    def _populate_selected_layers_list(self) -> None:
         for layer in self.selected_layers:
             self.selected_layers_list_widget.addItem(layer.name())
 
     def get_params(self) -> ExportStylesParams:
+        """Get parameters for style export."""
         return ExportStylesParams(self.selected_layers)

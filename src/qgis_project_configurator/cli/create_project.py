@@ -36,7 +36,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class CreateProjectArgs(Protocol):
-    """Args for creating a project."""
+    """Arguments for the create-project subcommand."""
 
     project: Path
     config: Path

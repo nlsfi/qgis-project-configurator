@@ -24,6 +24,8 @@ from qgis_project_configurator.yaml_loader import load_config
 
 
 class GetMetadataArgs(Protocol):
+    """Arguments for the get-metadata subcommand."""
+
     config: Path
     key: str | None
 
