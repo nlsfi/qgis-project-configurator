@@ -1,6 +1,6 @@
 services:
   db:
-    image: docker.io/postgis/postgis:latest
+    image: docker.io/postgis/postgis:18-3.7
     container_name: qpc-db
     environment:
       POSTGRES_DB: postgres
@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgis_data:/var/lib/postgresql/data
+      - postgis_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
       interval: 3s
