@@ -30,7 +30,7 @@ from qgis.core import (
     QgsProject,
 )
 
-from qgis_project_configurator.qgis_utils import save_style
+from qgis_project_configurator.qgis_utils import get_qgis_project_instance, save_style
 
 
 @dataclass
@@ -144,12 +144,7 @@ def create_configuration_template(
     project: QgsProject | None = None,
 ) -> dict:
     """Create a config template."""
-    project = project or QgsProject.instance()
-    if project is None:
-        msg = (
-            "Cannot create configuration template: No QGIS project instance available."
-        )
-        raise RuntimeError(msg)
+    project = project or get_qgis_project_instance()
     layer_tree = project.layerTreeRoot()
     if layer_tree is None:
         msg = "Cannot create configuration template: Cannot access layer tree."

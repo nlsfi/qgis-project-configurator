@@ -21,10 +21,9 @@ import logging
 from pathlib import Path
 from typing import Protocol
 
-from qgis.core import QgsProject
-
 from qgis_project_configurator.cli.cli_utils import LoggingProcessingFeedback, run_qgis
 from qgis_project_configurator.create_project import create_project, write_project
+from qgis_project_configurator.qgis_utils import get_qgis_project_instance
 from qgis_project_configurator.yaml_loader import load_config
 
 logging.basicConfig(
@@ -100,10 +99,7 @@ def _str_or_path(value: str) -> str | Path:
 
 @run_qgis
 def _create_project(args: CreateProjectArgs) -> None:
-    project = QgsProject.instance()
-    if not project:
-        msg = "Could not get a QGIS project instance"
-        raise RuntimeError(msg)
+    project = get_qgis_project_instance()
     project_path = args.project
     config_path = args.config
     data_source = args.data_source

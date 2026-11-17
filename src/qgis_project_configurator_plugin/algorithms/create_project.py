@@ -33,7 +33,7 @@ from qgis.PyQt.QtWidgets import QMainWindow, QMessageBox, QWidget
 from qgis_project_configurator.create_project import (
     create_project as lib_create_project,
 )
-from qgis_project_configurator.qgis_utils import iface
+from qgis_project_configurator.qgis_utils import get_qgis_project_instance, iface
 from qgis_project_configurator.yaml_loader import load_config
 from qgis_project_configurator_plugin.tools.parameters import CreateProjectParams
 from qgis_project_configurator_plugin.ui.create_project_dialog import (
@@ -94,10 +94,7 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
     def _check_for_empty_project_or_create_new(
         self,
     ) -> typing.Literal[False] | QgsProject:
-        project = QgsProject.instance()
-        if project is None:
-            msg = "Cannot access QGIS project"
-            raise RuntimeError(msg)
+        project = get_qgis_project_instance()
         if len(project.mapLayers()) > 0:
             msg_box = QMessageBox.question(
                 iface.mainWindow(),

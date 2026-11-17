@@ -77,24 +77,13 @@ def test_qgis_processing_params_parsed_into_create_project_params(
 
 
 class TestProjectPreparation:
-    def test_prepare_project_raises_if_qgis_project_none(
-        self, algorithm: CreateProjectAlgorithm, mocker: MockerFixture
-    ):
-        mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.QgsProject.instance",
-            return_value=None,
-        )
-
-        with pytest.raises(RuntimeError, match="Cannot access QGIS project"):
-            algorithm._check_for_empty_project_or_create_new()
-
     def test_prepare_project_returns_instance_if_qgis_project_already_empty(
         self, algorithm: CreateProjectAlgorithm, mocker: MockerFixture
     ):
         mock_project = MagicMock()
         mock_project.mapLayers.return_value = {}  # Empty layers dict
         mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.QgsProject.instance",
+            "qgis_project_configurator_plugin.algorithms.create_project.get_qgis_project_instance",
             return_value=mock_project,
         )
 
@@ -108,7 +97,7 @@ class TestProjectPreparation:
         mock_project = MagicMock()
         mock_project.mapLayers.return_value = {"layer1": "dummy_layer"}  # Not empty
         mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.QgsProject.instance",
+            "qgis_project_configurator_plugin.algorithms.create_project.get_qgis_project_instance",
             return_value=mock_project,
         )
         mocker.patch(
@@ -126,7 +115,7 @@ class TestProjectPreparation:
         mock_project = MagicMock()
         mock_project.mapLayers.return_value = {"layer1": "dummy_layer"}
         mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.QgsProject.instance",
+            "qgis_project_configurator_plugin.algorithms.create_project.get_qgis_project_instance",
             return_value=mock_project,
         )
         mocker.patch(

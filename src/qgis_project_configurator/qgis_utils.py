@@ -59,3 +59,12 @@ def save_style(layer: QgsMapLayer, style_path: Path) -> bool:
         typing.cast("QgsMapLayer.StyleCategory", categories),
     )
     return style_saved
+
+
+def get_qgis_project_instance() -> QgsProject:
+    """Safely retrieve the QGIS project singleton."""
+    project = QgsProject.instance()
+    if project is None:
+        msg = "Cannot access QGIS project instance"
+        raise RuntimeError(msg)
+    return project
