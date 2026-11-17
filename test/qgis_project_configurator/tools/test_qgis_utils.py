@@ -29,6 +29,8 @@ from qgis_project_configurator.qgis_utils import (
     save_style,
 )
 
+MODULE = "qgis_project_configurator.qgis_utils"
+
 
 class TestReadProjectEntry:
     def test_returns_default_if_type_conversion_fails(self):
@@ -85,7 +87,7 @@ class TestGetQgisProjectInstance:
     def test_returns_project_if_available(self, mocker: MockerFixture):
         mock_project = MagicMock()
         mocker.patch(
-            "qgis_project_configurator.qgis_utils.QgsProject.instance",
+            f"{MODULE}.QgsProject.instance",
             return_value=mock_project,
         )
 
@@ -95,7 +97,7 @@ class TestGetQgisProjectInstance:
 
     def test_raises_runtime_error_if_none(self, mocker: MockerFixture):
         mocker.patch(
-            "qgis_project_configurator.qgis_utils.QgsProject.instance",
+            f"{MODULE}.QgsProject.instance",
             return_value=None,
         )
 

@@ -33,6 +33,8 @@ if TYPE_CHECKING:
 
     from qgis_project_configurator_plugin.plugin import Plugin
 
+MODULE = "qgis_project_configurator_plugin.plugin"
+
 
 @pytest.fixture
 def plugin_loaded(qgis_iface: "QgisInterface") -> "Iterator[Plugin]":
@@ -90,7 +92,7 @@ def test_init_gui_raises_errors(
     mock_registry = MagicMock()
     mock_registry.addProvider.return_value = True
     registry_patch = mocker.patch(
-        "qgis_project_configurator_plugin.plugin.QgsApplication.processingRegistry",
+        f"{MODULE}.QgsApplication.processingRegistry",
         return_value=mock_registry,
     )
 
@@ -113,7 +115,7 @@ def test_unload_cleans_up_resources(
 
     mock_registry = MagicMock()
     mocker.patch(
-        "qgis_project_configurator_plugin.plugin.QgsApplication.processingRegistry",
+        f"{MODULE}.QgsApplication.processingRegistry",
         return_value=mock_registry,
     )
     # Use actual QMainWindow for PyQt to accept it in QAction
@@ -158,7 +160,7 @@ def test_unload_raises_errors(
     mock_registry = MagicMock()
     mock_registry.removeProvider.return_value = True
     registry_patch = mocker.patch(
-        "qgis_project_configurator_plugin.plugin.QgsApplication.processingRegistry",
+        f"{MODULE}.QgsApplication.processingRegistry",
         return_value=mock_registry,
     )
 
