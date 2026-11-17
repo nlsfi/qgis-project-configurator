@@ -29,7 +29,7 @@ iface = typing.cast("QgisInterface", utils_iface)
 
 
 def read_project_entry(
-    project: QgsProject, scope: str, key: str, default_value: None = None
+    project: QgsProject, scope: str, key: str, default_value: str | None = None
 ) -> Path | str | None:
     """Read an entry from a QGIS project.
 
