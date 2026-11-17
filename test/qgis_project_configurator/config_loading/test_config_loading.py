@@ -20,7 +20,7 @@ from pathlib import Path
 
 from qgis_project_configurator.yaml_loader import load_config
 
-YAML_PATH = Path(__file__).parent.parent / "resources/yaml"
+YAML_PATH = Path(__file__).parent.parent.parent / "resources/yaml"
 
 
 def test_simple_config_loads():
