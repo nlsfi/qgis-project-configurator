@@ -88,7 +88,7 @@ class CreateTemplateMapConfig(QgsProcessingAlgorithm):
             pass
 
     @typing.override
-    def flags(self) -> Qgis.ProcessingAlgorithmFlag:  # type: ignore[ty:invalid-method-override]
+    def flags(self) -> Qgis.ProcessingAlgorithmFlag:  # type: ignore[ty:invalid-method-override] # ty: ignore[unused-ignore-comment]
         return Qgis.ProcessingAlgorithmFlag.CanCancel
 
     @typing.override

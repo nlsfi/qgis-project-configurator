@@ -21,7 +21,9 @@ import typing
 from importlib import resources
 from pathlib import Path
 
-from qgis.core import QgsProcessingException  # type: ignore[ty:unresolved-import]
+from qgis.core import (
+    QgsProcessingException,  # type: ignore[ty:unresolved-import] # ty: ignore[unused-ignore-comment]
+)
 from qgis.gui import QgsFileWidget, QgsPanelWidget, QgsProcessingParametersGenerator
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QComboBox, QLabel, QWidget
