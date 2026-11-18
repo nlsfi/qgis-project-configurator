@@ -20,12 +20,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # TODO: enable this (and remove steps after) when all ruff errors fixed
-      # - name: Run prek
-      #   uses: j178/prek-action@4e14d07f9231acabce116ccfca13b13dd9755ece # v3.0.0
-      #   env:
-      #     # ty must be run with QGIS requirements available -> checked during test workflow
-      #     SKIP: ty
+      - name: Run prek
+        uses: j178/prek-action@4e14d07f9231acabce116ccfca13b13dd9755ece # v3.0.0
+        env:
+          # ty must be run with QGIS requirements available -> checked during test workflow
+          SKIP: ty
 
   commit-messages:
     if: ${{ github.event_name == 'pull_request' }}
