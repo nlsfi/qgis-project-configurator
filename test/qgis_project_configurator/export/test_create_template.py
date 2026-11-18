@@ -37,7 +37,7 @@ from qgis_project_configurator.create_template import (
     create_configuration_template,
 )
 
-MODULE = create_configuration_template.__module__
+MODULE = "qgis_project_configurator.create_template"
 
 
 def _create_mock_group(

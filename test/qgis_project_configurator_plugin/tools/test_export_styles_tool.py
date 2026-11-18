@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
+from typing import TYPE_CHECKING
 from unittest.mock import MagicMock
 
 import pytest
@@ -23,19 +24,26 @@ from pytest_mock import MockerFixture
 
 from qgis_project_configurator_plugin.tools.export_styles import export_styles
 
+if TYPE_CHECKING:
+    from qgis.gui import QgisInterface
+
 MODULE = "qgis_project_configurator_plugin.tools.export_styles"
 
 
-def test_export_styles_raises_if_main_window_none(mocker: MockerFixture) -> None:
-    mocker.patch(f"{MODULE}.iface.mainWindow", return_value=None)
+def test_export_styles_raises_if_main_window_none(
+    mocker: MockerFixture, qgis_iface: "QgisInterface"
+) -> None:
+    mocker.patch.object(qgis_iface, "mainWindow", return_value=None)
 
     with pytest.raises(RuntimeError, match="Cannot access main window"):
         export_styles()
 
 
-def test_export_styles_returns_early_if_dialog_cancelled(mocker: MockerFixture) -> None:
+def test_export_styles_returns_early_if_dialog_cancelled(
+    mocker: MockerFixture, qgis_iface: "QgisInterface"
+) -> None:
     mock_main_window = MagicMock()
-    mocker.patch(f"{MODULE}.iface.mainWindow", return_value=mock_main_window)
+    mocker.patch.object(qgis_iface, "mainWindow", return_value=mock_main_window)
 
     mock_dialog_class = mocker.patch(f"{MODULE}.ExportStylesDialog")
     mock_dialog_instance = mock_dialog_class.return_value
@@ -51,9 +59,11 @@ def test_export_styles_returns_early_if_dialog_cancelled(mocker: MockerFixture) 
     mock_export_layer_styles.assert_not_called()
 
 
-def test_export_styles_success(mocker: MockerFixture) -> None:
+def test_export_styles_success(
+    mocker: MockerFixture, qgis_iface: "QgisInterface"
+) -> None:
     mock_main_window = MagicMock()
-    mocker.patch(f"{MODULE}.iface.mainWindow", return_value=mock_main_window)
+    mocker.patch.object(qgis_iface, "mainWindow", return_value=mock_main_window)
 
     mock_dialog_class = mocker.patch(f"{MODULE}.ExportStylesDialog")
     mock_dialog_instance = mock_dialog_class.return_value

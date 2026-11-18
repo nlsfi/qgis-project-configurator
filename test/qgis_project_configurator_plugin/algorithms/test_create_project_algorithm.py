@@ -17,6 +17,7 @@
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 from unittest.mock import MagicMock
 
 import pytest
@@ -27,6 +28,12 @@ from qgis.PyQt.QtWidgets import QMessageBox
 from qgis_project_configurator_plugin.algorithms.create_project import (
     CreateProjectAlgorithm,
 )
+
+if TYPE_CHECKING:
+    from qgis.gui import QgisInterface
+
+
+MODULE = "qgis_project_configurator_plugin.algorithms.create_project"
 
 
 @pytest.fixture
@@ -83,7 +90,7 @@ class TestProjectPreparation:
         mock_project = MagicMock()
         mock_project.mapLayers.return_value = {}  # Empty layers dict
         mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.get_qgis_project_instance",
+            f"{MODULE}.get_qgis_project_instance",
             return_value=mock_project,
         )
 
@@ -97,11 +104,11 @@ class TestProjectPreparation:
         mock_project = MagicMock()
         mock_project.mapLayers.return_value = {"layer1": "dummy_layer"}  # Not empty
         mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.get_qgis_project_instance",
+            f"{MODULE}.get_qgis_project_instance",
             return_value=mock_project,
         )
         mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.QMessageBox.question",
+            f"{MODULE}.QMessageBox.question",
             return_value=QMessageBox.StandardButton.Cancel,
         )
 
@@ -110,21 +117,23 @@ class TestProjectPreparation:
         assert result is False
 
     def test_prepare_project_returns_project_instance_if_qgis_project_not_empty_and_user_closes_project(
-        self, algorithm: CreateProjectAlgorithm, mocker: MockerFixture
+        self,
+        algorithm: CreateProjectAlgorithm,
+        mocker: MockerFixture,
+        qgis_iface: "QgisInterface",
     ):
         mock_project = MagicMock()
         mock_project.mapLayers.return_value = {"layer1": "dummy_layer"}
         mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.get_qgis_project_instance",
+            f"{MODULE}.get_qgis_project_instance",
             return_value=mock_project,
         )
         mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.QMessageBox.question",
+            f"{MODULE}.QMessageBox.question",
             return_value=QMessageBox.StandardButton.Close,
         )
-        mock_new_project = mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.iface.newProject",
-            return_value=True,
+        mock_new_project = mocker.patch.object(
+            qgis_iface, "newProject", return_value=True
         )
 
         result = algorithm._check_for_empty_project_or_create_new()
@@ -154,7 +163,10 @@ class TestPrepareAlgorithm:
         mock_feedback.pushWarning.assert_called_once_with("Cancelling.")
 
     def test_prepare_algorithm_raises_if_no_map_canvas(
-        self, algorithm: CreateProjectAlgorithm, mocker: MockerFixture
+        self,
+        algorithm: CreateProjectAlgorithm,
+        mocker: MockerFixture,
+        qgis_iface: "QgisInterface",
     ):
         mock_feedback = MagicMock()
         mock_project = MagicMock()
@@ -165,19 +177,17 @@ class TestPrepareAlgorithm:
             return_value=mock_project,
         )
         mocker.patch.object(algorithm, "_get_params")
-        mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.load_config"
-        )
-        mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.iface.mapCanvas",
-            return_value=None,
-        )
+        mocker.patch(f"{MODULE}.load_config")
+        mocker.patch.object(qgis_iface, "mapCanvas", return_value=None)
 
         with pytest.raises(RuntimeError, match="Cannot access map canvas"):
             algorithm.prepareAlgorithm({}, MagicMock(), mock_feedback)
 
     def test_prepare_algorithm_success(
-        self, algorithm: CreateProjectAlgorithm, mocker: MockerFixture
+        self,
+        algorithm: CreateProjectAlgorithm,
+        mocker: MockerFixture,
+        qgis_iface: "QgisInterface",
     ):
         mock_feedback = MagicMock()
         mock_context = MagicMock()
@@ -196,17 +206,9 @@ class TestPrepareAlgorithm:
             data_source="db",
         )
         mocker.patch.object(algorithm, "_get_params", return_value=mock_params)
-        mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.load_config",
-            return_value=mock_config,
-        )
-        mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.iface.mapCanvas",
-            return_value=mock_canvas,
-        )
-        mock_lib_create = mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.lib_create_project"
-        )
+        mocker.patch(f"{MODULE}.load_config", return_value=mock_config)
+        mocker.patch.object(qgis_iface, "mapCanvas", return_value=mock_canvas)
+        mock_lib_create = mocker.patch(f"{MODULE}.lib_create_project")
 
         result = algorithm.prepareAlgorithm({}, mock_context, mock_feedback)
 
@@ -226,7 +228,10 @@ class TestPrepareAlgorithm:
         )
 
     def test_prepare_algorithm_unfreezes_on_exception(
-        self, algorithm: CreateProjectAlgorithm, mocker: MockerFixture
+        self,
+        algorithm: CreateProjectAlgorithm,
+        mocker: MockerFixture,
+        qgis_iface: "QgisInterface",
     ):
         mock_feedback = MagicMock()
         mock_project = MagicMock()
@@ -238,17 +243,11 @@ class TestPrepareAlgorithm:
             return_value=mock_project,
         )
         mocker.patch.object(algorithm, "_get_params")
-        mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.load_config"
-        )
-        mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.iface.mapCanvas",
-            return_value=mock_canvas,
-        )
+        mocker.patch(f"{MODULE}.load_config")
+        mocker.patch.object(qgis_iface, "mapCanvas", return_value=mock_canvas)
 
         mocker.patch(
-            "qgis_project_configurator_plugin.algorithms.create_project.lib_create_project",
-            side_effect=ValueError("Test crash"),
+            f"{MODULE}.lib_create_project", side_effect=ValueError("Test crash")
         )
 
         with pytest.raises(ValueError, match="Test crash"):
