@@ -28,7 +28,7 @@ from qgis.core import (
     QgsProcessingParameterString,
     QgsProject,
 )
-from qgis.PyQt.QtWidgets import QMainWindow, QMessageBox, QWidget
+from qgis.PyQt.QtWidgets import QMessageBox, QWidget
 
 from qgis_project_configurator.create_project import (
     create_project as lib_create_project,
@@ -188,7 +188,7 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
 
     @typing.override
     def createCustomParametersWidget(
-        self, parent: QMainWindow | None = None
+        self, parent: QWidget | None = None
     ) -> QWidget | None:
         return CreateProjectDialog(self, parent=parent)
 
