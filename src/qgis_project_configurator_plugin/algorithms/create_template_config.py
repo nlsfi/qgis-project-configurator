@@ -56,7 +56,7 @@ class CreateTemplateMapConfig(QgsProcessingAlgorithm):
         return "Create a template map configuration"
 
     @typing.override
-    def initAlgorithm(self, configuration: dict[str | None, Any] | None = None) -> None:
+    def initAlgorithm(self, configuration: dict[Any, Any] | None = None) -> None:
         parameters = [
             QgsProcessingParameterFileDestination(
                 self.OUTPUT,
@@ -88,13 +88,13 @@ class CreateTemplateMapConfig(QgsProcessingAlgorithm):
             pass
 
     @typing.override
-    def flags(self) -> Qgis.ProcessingAlgorithmFlag:
+    def flags(self) -> Qgis.ProcessingAlgorithmFlag:  # type: ignore[ty:invalid-method-override]
         return Qgis.ProcessingAlgorithmFlag.CanCancel
 
     @typing.override
     def prepareAlgorithm(
         self,
-        parameters: dict[str | None, typing.Any],
+        parameters: dict[Any, Any],
         context: "QgsProcessingContext",
         feedback: "QgsProcessingFeedback | None",
     ) -> bool:
@@ -130,7 +130,7 @@ class CreateTemplateMapConfig(QgsProcessingAlgorithm):
     @typing.override
     def processAlgorithm(
         self,
-        parameters: dict[str | None, typing.Any],
+        parameters: dict[Any, Any],
         context: "QgsProcessingContext",
         feedback: "QgsProcessingFeedback | None",
     ) -> dict[str, str]:

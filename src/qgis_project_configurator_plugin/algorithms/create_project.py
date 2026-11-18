@@ -60,7 +60,7 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
 
     @typing.override
     def initAlgorithm(
-        self, configuration: dict[str | None, typing.Any] | None = None
+        self, configuration: dict[typing.Any, typing.Any] | None = None
     ) -> None:
         parameters = [
             QgsProcessingParameterFile(self.CONFIG_PATH, "Configuration file path"),
@@ -75,11 +75,11 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
                 pass
 
     @typing.override
-    def flags(self) -> Qgis.ProcessingAlgorithmFlag:
+    def flags(self) -> Qgis.ProcessingAlgorithmFlag:  # type: ignore[ty:invalid-method-override]
         return Qgis.ProcessingAlgorithmFlag.CanCancel
 
     def _get_params(
-        self, parameters: dict[str | None, typing.Any], context: "QgsProcessingContext"
+        self, parameters: dict[typing.Any, typing.Any], context: "QgsProcessingContext"
     ) -> CreateProjectParams:
         return CreateProjectParams(
             config_path=Path(
@@ -114,7 +114,7 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
     @typing.override
     def prepareAlgorithm(
         self,
-        parameters: dict[str | None, typing.Any],
+        parameters: dict[typing.Any, typing.Any],
         context: "QgsProcessingContext",
         feedback: "QgsProcessingFeedback | None",
     ) -> bool:
@@ -166,7 +166,7 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
     @typing.override
     def processAlgorithm(
         self,
-        parameters: dict[str | None, typing.Any],
+        parameters: dict[typing.Any, typing.Any],
         context: "QgsProcessingContext",
         feedback: "QgsProcessingFeedback | None",
     ) -> dict:
