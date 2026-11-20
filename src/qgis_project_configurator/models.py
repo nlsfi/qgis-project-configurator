@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -25,6 +26,8 @@ from qgis.core import QgsMapLayer
 
 @dataclass(frozen=True)
 class PostgisSource:
+    """Represent a PostGIS layer data source."""
+
     type: str
     service: str
     schema: str
@@ -34,6 +37,8 @@ class PostgisSource:
 
 @dataclass(frozen=True)
 class GpkgSource:
+    """Represent a GeoPackage layer data source."""
+
     type: str
     path: Path
     table: str
@@ -44,18 +49,22 @@ DataSource = PostgisSource | GpkgSource
 
 @dataclass(frozen=True)
 class Scale:
+    """Define minimum and maximum visibility scale thresholds."""
+
     min: int | float | None
     max: int | float | None
 
 
-MapThemeNames = list[str]
+MapThemeNames = Sequence[str]
 
 
-MapThemes = dict[str, list[QgsMapLayer]]
+MapThemes = Mapping[str, Sequence[QgsMapLayer]]
 
 
 @dataclass(frozen=True)
 class VectorLayer:
+    """Represent a configured vector layer in the layer tree."""
+
     name: str
     style_file: Path | None
     data_source: DataSource
@@ -65,12 +74,16 @@ class VectorLayer:
 
 @dataclass(frozen=True)
 class LayerGroup:
+    """Represent a group containing child layer tree nodes."""
+
     name: str
-    children: list["LayerTreeNode"]
+    children: Sequence["LayerTreeNode"]
 
 
 @dataclass(frozen=True)
 class EmbeddedLayerGroup:
+    """Represent a layer group embedded from an external project file."""
+
     name: str
     source: Path
 
@@ -78,39 +91,47 @@ class EmbeddedLayerGroup:
 LayerTreeNode = VectorLayer | LayerGroup | EmbeddedLayerGroup
 
 
-LayerTree = list[LayerTreeNode]
+LayerTree = Sequence[LayerTreeNode]
 
 
 @dataclass(frozen=True)
 class ProjectEntry:
+    """Represent a key-value entry in QGIS project properties."""
+
     scope: str
     key: str
     value: Any
 
 
-ProjectProperties = list[ProjectEntry]
+ProjectProperties = Sequence[ProjectEntry]
 
 
 @dataclass(frozen=True)
 class PrintLayout:
+    """Represent a print layout configuration."""
+
     layout_file: Path
     atlas_coverage_layer_name: str | None
 
 
-PrintLayouts = list[PrintLayout]
+PrintLayouts = Sequence[PrintLayout]
 
 
-Metadata = dict[str, Any]
+Metadata = Mapping[str, Any]
 
 
 @dataclass(frozen=True)
 class CompiledConfig:
+    """Represent the complete compiled configuration for a QGIS project."""
+
     layer_tree: LayerTree
     project_properties: ProjectProperties
     layouts: PrintLayouts
     metadata: Metadata
 
     def count_map_layers(self) -> int:
+        """Count the total number of layers and embedded groups in the layer tree."""
+
         def count(node: LayerTreeNode) -> int:
             if isinstance(node, LayerGroup):
                 return sum(count(child_node) for child_node in node.children)

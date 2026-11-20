@@ -16,13 +16,20 @@
 # You should have received a copy of the GNU General Public License
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
+import typing
 from pathlib import Path
 
 from qgis.core import QgsMapLayer, QgsProject
+from qgis.utils import iface as utils_iface
+
+if typing.TYPE_CHECKING:
+    from qgis.gui import QgisInterface
+
+iface = typing.cast("QgisInterface", utils_iface)
 
 
 def read_project_entry(
-    project: QgsProject, scope: str, key: str, default_value: None = None
+    project: QgsProject, scope: str, key: str, default_value: str | None = None
 ) -> Path | str | None:
     """Read an entry from a QGIS project.
 
@@ -44,8 +51,20 @@ def read_project_entry(
 
 def save_style(layer: QgsMapLayer, style_path: Path) -> bool:
     """Save layer style to file."""
+    categories = (
+        QgsMapLayer.StyleCategory.Symbology | QgsMapLayer.StyleCategory.Labeling
+    )
     _msg, style_saved = layer.saveNamedStyle(
         str(style_path),
-        QgsMapLayer.StyleCategory.Symbology | QgsMapLayer.StyleCategory.Labeling,
+        typing.cast("QgsMapLayer.StyleCategory", categories),
     )
     return style_saved
+
+
+def get_qgis_project_instance() -> QgsProject:
+    """Safely retrieve the QGIS project singleton."""
+    project = QgsProject.instance()
+    if project is None:
+        msg = "Cannot access QGIS project instance"
+        raise RuntimeError(msg)
+    return project

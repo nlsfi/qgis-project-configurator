@@ -22,5 +22,6 @@ repository=https://github.com/nlsfi/qgis-project-configurator
 homepage=https://github.com/nlsfi/qgis-project-configurator
 tracker=https://github.com/nlsfi/qgis-project-configurator/issues
 category=Plugins
+# Set to false before going into production
 experimental=True
 deprecated=False

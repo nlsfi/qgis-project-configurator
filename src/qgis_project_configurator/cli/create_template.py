@@ -19,16 +19,17 @@ import argparse
 from pathlib import Path
 from typing import Protocol
 
-from qgis.core import QgsProject
-
 from qgis_project_configurator.cli.cli_utils import LoggingProcessingFeedback, run_qgis
 from qgis_project_configurator.create_template import (
     ConfigStyle,
     create_configuration_template,
 )
+from qgis_project_configurator.qgis_utils import get_qgis_project_instance
 
 
 class CreateTemplateArgs(Protocol):
+    """Arguments for the create-template subcommand."""
+
     project: Path
     config: Path
     style_directory: Path | None
@@ -67,10 +68,7 @@ def setup_parser(subparsers: argparse._SubParsersAction) -> None:
 
 @run_qgis
 def _create_template(args: CreateTemplateArgs) -> None:
-    project_instance = QgsProject.instance()
-    if project_instance is None:
-        msg = "Could not get a QGIS project instance"
-        raise RuntimeError(msg)
+    project_instance = get_qgis_project_instance()
     success = project_instance.read(str(args.project))
     if not success:
         msg = "Could not read QGIS project"

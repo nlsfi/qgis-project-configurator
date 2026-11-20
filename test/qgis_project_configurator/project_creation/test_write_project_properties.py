@@ -27,9 +27,14 @@ from qgis_project_configurator.project_manager import ProjectManager
 
 
 @pytest.fixture
-def project_manager():
+def mock_project() -> MagicMock:
+    return MagicMock()
+
+
+@pytest.fixture
+def project_manager(mock_project: MagicMock) -> ProjectManager:
     return ProjectManager(
-        project=MagicMock(),
+        project=mock_project,
         project_properties=[ProjectEntry(scope="scope", key="key", value="value")],
         config_path=Path("/path/to/config.yaml"),
         style_variant="default",
@@ -37,40 +42,44 @@ def project_manager():
     )
 
 
-def test_write_project_properties_no_metadata(project_manager: ProjectManager):
+def test_write_project_properties_no_metadata(
+    project_manager: ProjectManager, mock_project: MagicMock
+) -> None:
     project_manager.write_project_properties()
 
-    project_manager.project.writeEntry.assert_called_once_with(
+    mock_project.writeEntry.assert_called_once_with(
         scope="scope", key="key", value="value"
     )
 
 
-def test_write_project_properties_store_metadata(project_manager: ProjectManager):
+def test_write_project_properties_store_metadata(
+    project_manager: ProjectManager, mock_project: MagicMock
+) -> None:
     project_manager.write_project_properties(store_metadata=True)
 
-    project_manager.project.writeEntry.assert_any_call(
-        scope="scope", key="key", value="value"
-    )
-    project_manager.project.writeEntry.assert_any_call(
+    mock_project.writeEntry.assert_any_call(scope="scope", key="key", value="value")
+    mock_project.writeEntry.assert_any_call(
         scope="qgis_project_configurator",
         key="config_path",
         value="/path/to/config.yaml",
     )
-    project_manager.project.writeEntry.assert_any_call(
+    mock_project.writeEntry.assert_any_call(
         scope="qgis_project_configurator",
         key="style_variant",
         value="default",
     )
-    project_manager.project.writeEntry.assert_any_call(
+    mock_project.writeEntry.assert_any_call(
         scope="qgis_project_configurator",
         key="data_source",
         value="gpkg",
     )
 
 
-def test_set_project_crs(project_manager: ProjectManager):
+def test_set_project_crs(
+    project_manager: ProjectManager, mock_project: MagicMock
+) -> None:
     project_manager.project_properties = [ProjectEntry("crs", "/", 3067)]
     project_manager.write_project_properties()
-    project_manager.project.setCrs.assert_called_once_with(
+    mock_project.setCrs.assert_called_once_with(
         QgsCoordinateReferenceSystem.fromEpsgId(3067)
     )

@@ -26,6 +26,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 class MapThemeManager:
+    """Manage map themes in a QGIS project."""
+
     def __init__(
         self,
         project: QgsProject,
@@ -34,6 +36,7 @@ class MapThemeManager:
         self.theme_collection = self.project.mapThemeCollection()
 
     def add_themes(self, themes: MapThemes) -> None:
+        """Add map themes to the project and layers to map themes."""
         if not self.theme_collection:
             return
         for theme_name, layers in themes.items():

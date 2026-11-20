@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -35,4 +36,4 @@ class CreateProjectParams:
 class ExportStylesParams:
     """Parameters for exporting styles."""
 
-    selected_layers: list[QgsMapLayer]
+    selected_layers: Sequence[QgsMapLayer]

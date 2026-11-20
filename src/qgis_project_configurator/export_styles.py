@@ -17,6 +17,7 @@
 # along with QGIS Project Configurator.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
+from collections.abc import Sequence
 from pathlib import Path
 
 from qgis.core import QgsMapLayer, QgsProject
@@ -29,7 +30,7 @@ from qgis_project_configurator.yaml_loader import load_config
 LOGGER = logging.getLogger(__name__)
 
 
-def export_layer_styles(layers: list[QgsMapLayer], project: QgsProject) -> None:
+def export_layer_styles(layers: Sequence[QgsMapLayer], project: QgsProject) -> None:
     """Export layer styles."""
     LOGGER.info("exporting selected layer styles")
     config_path = read_project_entry(

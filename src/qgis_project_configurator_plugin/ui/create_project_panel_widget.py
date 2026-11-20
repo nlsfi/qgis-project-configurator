@@ -21,7 +21,9 @@ import typing
 from importlib import resources
 from pathlib import Path
 
-from qgis.core import QgsProcessingException
+from qgis.core import (
+    QgsProcessingException,  # ty: ignore[unused-ignore-comment, unresolved-import]
+)
 from qgis.gui import QgsFileWidget, QgsPanelWidget, QgsProcessingParametersGenerator
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QComboBox, QLabel, QWidget
@@ -36,7 +38,7 @@ LOGGER = logging.getLogger(__name__)
 CUSTOM_GPKG_LABEL = "Custom Geopackage"
 
 
-class CreateProjectPanelWidget(QgsPanelWidget, CreateProjectPanelWidgetBase):  # type: ignore [valid-type, misc]
+class CreateProjectPanelWidget(QgsPanelWidget, CreateProjectPanelWidgetBase):  # type: ignore[valid-type, misc]
     """Widget for creating project."""
 
     config_file_widget: QgsFileWidget
@@ -103,11 +105,11 @@ class CreateProjectPanelWidget(QgsPanelWidget, CreateProjectPanelWidgetBase):  #
             self.style_variant_combo_box.addItem(version)
 
     @typing.override
-    def setParameters(self, parameters: dict[str | None, typing.Any]) -> None:
-        self.config_file_widget.setFilePath(parameters.get("CONFIG_PATH"))
-        self.style_variant_combo_box.setCurrentText(parameters.get("STYLE_VARIANT"))
+    def setParameters(self, parameters: dict[str | None, typing.Any]) -> None:  # type: ignore[reportGeneralTypeIssues]
+        self.config_file_widget.setFilePath(parameters.get("CONFIG_PATH", ""))
+        self.style_variant_combo_box.setCurrentText(parameters.get("STYLE_VARIANT", ""))
 
-        data_source = parameters.get("DATA_SOURCE")
+        data_source = parameters.get("DATA_SOURCE", "")
         data_source_index = self.data_source_combo_box.findText(data_source)
         if data_source_index != -1:
             self.data_source_combo_box.setCurrentIndex(data_source_index)
@@ -115,9 +117,9 @@ class CreateProjectPanelWidget(QgsPanelWidget, CreateProjectPanelWidgetBase):  #
             self.data_source_combo_box.setCurrentText(CUSTOM_GPKG_LABEL)
 
     @typing.override
-    def createProcessingParameters(
+    def createProcessingParameters(  # type: ignore[reportGeneralTypeIssues]
         self,
-        _flags: "QgsProcessingParametersGenerator.Flag" = QgsProcessingParametersGenerator.Flags(),  # noqa: B008, E501
+        _flags: "QgsProcessingParametersGenerator.Flag" = QgsProcessingParametersGenerator.Flags(),  # ty: ignore[unresolved-attribute, invalid-parameter-default] # type: ignore[reportAttributeAccessIssue] # noqa: B008, E501
     ) -> dict | None:
         try:
             return {

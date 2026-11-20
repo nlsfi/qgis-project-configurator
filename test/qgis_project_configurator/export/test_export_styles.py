@@ -34,17 +34,15 @@ from pytest_mock import MockerFixture
 
 from qgis_project_configurator.export_styles import export_layer_styles
 
+MODULE = "qgis_project_configurator.export_styles"
+
 
 def test_export_layer_styles(mocker: MockerFixture) -> None:
-    mock_read_entry = mocker.patch(
-        "qgis_project_configurator.export_styles.read_project_entry"
-    )
-    mock_exporter_cls = mocker.patch(
-        "qgis_project_configurator.export_styles.StyleExporter"
-    )
+    mock_read_entry = mocker.patch(f"{MODULE}.read_project_entry")
+    mock_exporter_cls = mocker.patch(f"{MODULE}.StyleExporter")
 
-    mocker.patch("qgis_project_configurator.export_styles.ConfigCompiler")
-    mocker.patch("qgis_project_configurator.export_styles.load_config")
+    mocker.patch(f"{MODULE}.ConfigCompiler")
+    mocker.patch(f"{MODULE}.load_config")
 
     mock_read_entry.side_effect = [
         Path("/path/to/config.yaml"),
@@ -76,12 +74,8 @@ def test_export_layer_styles_does_not_export_with_wrong_params(
     mocker: MockerFixture,
     mocked_project_reads: list,
 ) -> None:
-    mock_read_entry = mocker.patch(
-        "qgis_project_configurator.export_styles.read_project_entry"
-    )
-    mock_exporter_cls = mocker.patch(
-        "qgis_project_configurator.export_styles.StyleExporter"
-    )
+    mock_read_entry = mocker.patch(f"{MODULE}.read_project_entry")
+    mock_exporter_cls = mocker.patch(f"{MODULE}.StyleExporter")
 
     mock_read_entry.side_effect = mocked_project_reads
 
