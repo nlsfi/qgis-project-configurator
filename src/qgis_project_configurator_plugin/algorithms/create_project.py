@@ -75,7 +75,7 @@ class CreateProjectAlgorithm(QgsProcessingAlgorithm):
                 pass
 
     @typing.override
-    def flags(self) -> Qgis.ProcessingAlgorithmFlag:  # type: ignore[ty:invalid-method-override] # ty: ignore[unused-ignore-comment]
+    def flags(self) -> Qgis.ProcessingAlgorithmFlag:  # ty: ignore[unused-ignore-comment, invalid-method-override]
         return Qgis.ProcessingAlgorithmFlag.CanCancel
 
     def _get_params(

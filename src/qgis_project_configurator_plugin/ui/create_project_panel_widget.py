@@ -22,7 +22,7 @@ from importlib import resources
 from pathlib import Path
 
 from qgis.core import (
-    QgsProcessingException,  # type: ignore[ty:unresolved-import] # ty: ignore[unused-ignore-comment]
+    QgsProcessingException,  # ty: ignore[unused-ignore-comment, unresolved-import]
 )
 from qgis.gui import QgsFileWidget, QgsPanelWidget, QgsProcessingParametersGenerator
 from qgis.PyQt import uic
